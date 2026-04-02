@@ -3,15 +3,20 @@
 ## Task Description
 
 This is a Harbor benchmark task that challenges an agent to diagnose and fix a
-broken Python event-ingestion service caused by a **diamond dependency
-conflict**: two packages that are both required at runtime depend on
-incompatible versions of a shared third package.
+broken Python service caused by a [diamond dependency
+conflict](https://jlbp.dev/what-is-a-diamond-dependency-conflict).
 
-The agent is given a Docker container with a running Flask service. The service
-appears healthy at startup (health checks pass), but a key request path fails
-at runtime. The agent must identify the root cause in the dependency tree, make
-the minimal correct change to `requirements.txt`, and reinstall so the fix
-survives a cold start.
+A diamond dependency conflict is a scenario where two or more libraries in a dependency tree 
+consume a common library using versioned references, and none of the common library versions 
+in those references contain all of the features that the consumers expect. Consequently, it 
+is not possible to select a set of versions that form a working program.
+
+[insert image]
+
+The agent is given a Docker container with a running Flask service. The service appears 
+healthy at startup (health checks pass), but a key request path fails at runtime. 
+The agent must identify the root cause in the dependency tree, make the minimal correct 
+change to requirements.txt, and reinstall so the fix survives a cold start.
 
 The task tests whether a model can:
 1. Diagnose a version-compatibility failure without obvious stack traces at startup
@@ -67,7 +72,7 @@ app.py
   └── schema-lib     (v1.8.2 or v2.1.0) provides normalize_event(...)
 ```
 
-Two versions of `reporting-sdk` and `schema-lib` are vendored side-by-side:
+API Contracts of each SDK:
 
 | Package              | Version | `normalize_event` signature                         | Compatible with `telemetry_sdk`? |
 |----------------------|---------|-----------------------------------------------------|----------------------------------|
@@ -84,12 +89,7 @@ Two versions of `reporting-sdk` and `schema-lib` are vendored side-by-side:
 `telemetry_sdk` and `reporting_sdk_v2` both depend on `schema-lib` but need
 different versions:
 
-```
-requirements.txt (broken)
-  ├── telemetry-sdk    → needs schema_lib_v1  (calls drop_empty=True)
-  ├── reporting-sdk-v2 → declares dep on schema_lib_v2
-  └── schema-lib-v2   ← actively installed  ← CONFLICT
-```
+[insert image here]
 
 When Python tries to call `schema_lib.normalize_event(payload, drop_empty=True)`
 via `telemetry_sdk`, it blows up:
@@ -97,15 +97,6 @@ via `telemetry_sdk`, it blows up:
 ```
 TypeError: normalize_event() got an unexpected keyword argument 'drop_empty'
 ```
-
-This is a diamond conflict because there is one shared library (`schema-lib`)
-with two consumers that require incompatible interfaces. Since only one version
-of `schema-lib` can be installed at a time, at least one consumer will break.
-
-The resolution is to choose the branch where **all consumers are satisfied** —
-which means switching to `reporting_sdk_v1` (which also uses `drop_empty=True`
-and depends on `schema_lib_v1`), so the whole dependency tree can converge on
-`schema_lib_v1`.
 
 Current broken `requirements.txt`:
 
@@ -119,6 +110,13 @@ reporting-sdk @ file:///app/packages/reporting_sdk_v2  ← wrong branch
 ---
 
 ## The Ideal Fix (Step by Step)
+
+The resolution is to choose the branch where **all consumers are satisfied** —
+which means switching to `reporting_sdk_v1` (which also uses `drop_empty=True`
+and depends on `schema_lib_v1`), so the whole dependency tree can converge on
+`schema_lib_v1`.
+
+[insert image here]
 
 **Step 1 — Identify the failing call**
 
@@ -239,6 +237,8 @@ running Python environment still has `schema_lib_v2` installed.
 **Trials:** 10  
 **Score:** 4 / 10 (mean = 0.4)
 
+[insert image here]
+
 ### Outcome by trial
 
 | Trial | Result | Tests passed | Root failure |
@@ -275,260 +275,3 @@ all, so the schema_lib_v2 remained installed and multiple tests failed.
 `schema_lib_v1` + `reporting_sdk_v1`, run `pip install --force-reinstall`,
 restart the app. All 9 tests pass.
 
-Top-level task layout:
-
-- [instruction.md](instruction.md): prompt shown to the agent
-- [task.toml](task.toml): Harbor task metadata and runtime configuration
-- [README.md](README.md): author-facing explanation of the task design
-- [run_limited.sh](run_limited.sh): helper for running Harbor with tighter knobs
-- [environment/](environment/): files copied into `/app/` in the container
-- [solution/](solution/): oracle fix used to validate the task
-- [tests/](tests/): verifier logic used after the solve step
-
-Environment layout:
-
-- [environment/Dockerfile](environment/Dockerfile): builds the task image and installs Python test/runtime dependencies
-- [environment/entrypoint.sh](environment/entrypoint.sh): thin container entrypoint
-- [environment/requirements.txt](environment/requirements.txt): top-level app dependencies installed into `/app/`
-- [environment/app.py](environment/app.py): Flask service entrypoint with `/health`, `/ingest`, and `/reports/summary`
-- [environment/packages/](environment/packages/): vendored internal SDK packages used by the service
-
-Vendored package layout:
-
-- [environment/packages/telemetry_sdk](environment/packages/telemetry_sdk): telemetry encoding package used by `/ingest`
-- [environment/packages/reporting_sdk_v1](environment/packages/reporting_sdk_v1): healthy reporting branch used by `/ingest`
-- [environment/packages/reporting_sdk_v2](environment/packages/reporting_sdk_v2): unused alternate reporting branch kept in the repo
-- [environment/packages/schema_lib_v1](environment/packages/schema_lib_v1): healthy schema dependency used by telemetry/reporting v1
-- [environment/packages/schema_lib_v2](environment/packages/schema_lib_v2): unused alternate schema branch kept in the repo
-- [environment/packages/summary_sdk_v1](environment/packages/summary_sdk_v1): unused stable summary branch kept in the repo
-- [environment/packages/summary_sdk_v2](environment/packages/summary_sdk_v2): installed summary branch containing the planted circular import
-
-Validation layout:
-
-- [solution/solve.sh](solution/solve.sh): oracle script that applies the accepted fix
-- [tests/test.sh](tests/test.sh): fixed Harbor verifier wrapper
-- [tests/test_outputs.py](tests/test_outputs.py): functional and source-level assertions
-
-## Application Flow
-
-The runtime starts in [environment/app.py](environment/app.py).
-
-That file defines three HTTP paths:
-
-1. `GET /health`
-   - returns a trivial `{"status": "ok"}` response
-   - exists to make the service look healthy at startup
-2. `POST /ingest`
-   - validates input
-   - calls `telemetry_sdk.encode_event(...)`
-   - calls `reporting_sdk.build_report_record(...)`
-   - stores normalized event data in memory
-3. `GET /reports/summary`
-   - imports `summary_sdk.render_summary` lazily inside the handler
-   - counts stored events by source
-   - uses the summary SDK to produce the response payload
-
-The important design choice is the lazy import inside the summary handler. That
-is what allows startup and ingest to work while the summary endpoint still fails
-at runtime.
-
-## Effective Dependency Graph
-
-```mermaid
-graph TD
-    A[app.py] --> B[telemetry-sdk]
-    A --> C[reporting-sdk v1]
-    A --> S[summary-sdk v2]
-
-    B --> D[schema-lib v1]
-    C --> D
-    S --> V2[summary-sdk v2 package]
-
-    B --> Y[normalize_event(..., drop_empty=True)]
-    V2 --> Z[circular import between builder.py and labels.py]
-```
-
-The task deliberately mixes one healthy line and one broken line:
-
-- ingest-side dependencies are healthy and should stay that way
-- summary-side dependency is installed but internally broken
-
-## Issues and Their Types
-
-This version really has one root bug plus a few misleading signals around it.
-
-### Issue 1: Runtime circular import in the installed summary SDK
-
-Type:
-
-- Python import-graph bug
-- runtime-only failure
-- vendored package defect
-
-Code involved:
-
-- [environment/packages/summary_sdk_v2/summary_sdk/__init__.py](environment/packages/summary_sdk_v2/summary_sdk/__init__.py)
-- [environment/packages/summary_sdk_v2/summary_sdk/builder.py](environment/packages/summary_sdk_v2/summary_sdk/builder.py)
-- [environment/packages/summary_sdk_v2/summary_sdk/labels.py](environment/packages/summary_sdk_v2/summary_sdk/labels.py)
-
-Why it happens:
-
-1. `summary_sdk.__init__` imports `render_summary` from `builder.py`
-2. `builder.py` imports `TOTAL_FIELD` from `labels.py`
-3. `labels.py` imports `normalize_sources` back from `builder.py`
-
-That creates this cycle:
-
-```text
-builder.py -> labels.py -> builder.py
-```
-
-By the time Python evaluates `labels.py`, `builder.py` is only partially
-initialized, so the import fails.
-
-Observed symptom:
-
-```text
-ImportError: cannot import name 'normalize_sources' from partially initialized module 'summary_sdk.builder'
-```
-
-Where the user sees it:
-
-- not on container startup
-- not on `GET /health`
-- not on `POST /ingest`
-- only on `GET /reports/summary`
-
-### Issue 2: Misleading healthy ingest path
-
-Type:
-
-- intentional distractor
-- healthy dependency line
-- not a bug in the current version
-
-Code involved:
-
-- [environment/requirements.txt](environment/requirements.txt)
-- [environment/packages/telemetry_sdk/telemetry_sdk/encoder.py](environment/packages/telemetry_sdk/telemetry_sdk/encoder.py)
-- [environment/packages/reporting_sdk_v1/reporting_sdk/formatter.py](environment/packages/reporting_sdk_v1/reporting_sdk/formatter.py)
-- [environment/packages/schema_lib_v1/schema_lib/__init__.py](environment/packages/schema_lib_v1/schema_lib/__init__.py)
-
-Why it matters:
-
-The earlier versions of this task had a real dependency conflict on the ingest
-side. That is no longer true. In the current version, the ingest path is
-already correct, and any attempt to “fix” telemetry/reporting/schema is the
-wrong move.
-
-This matters because many models still overfit to the older dependency-conflict
-pattern and start changing the healthy branch.
-
-### Issue 3: Lazy import hides the bug until a real workflow is exercised
-
-Type:
-
-- delayed runtime failure
-- debugging trap
-- application wiring choice
-
-Code involved:
-
-- [environment/app.py](environment/app.py)
-
-Why it matters:
-
-The summary handler imports `summary_sdk` inside the function body rather than
-at module load time. That means the service boots cleanly and looks healthy
-until the summary route is actually hit.
-
-This is not itself a defect to fix. It is the mechanism that makes the task
-non-trivial.
-
-## Current Broken Code
-
-The active broken requirement selection is in
-[environment/requirements.txt](environment/requirements.txt):
-
-```text
-Flask==3.0.3
-schema-lib @ file:///app/packages/schema_lib_v1
-telemetry-sdk @ file:///app/packages/telemetry_sdk
-reporting-sdk @ file:///app/packages/reporting_sdk_v1
-summary-sdk @ file:///app/packages/summary_sdk_v2
-```
-
-The key broken source pair is:
-
-- [environment/packages/summary_sdk_v2/summary_sdk/builder.py](environment/packages/summary_sdk_v2/summary_sdk/builder.py)
-- [environment/packages/summary_sdk_v2/summary_sdk/labels.py](environment/packages/summary_sdk_v2/summary_sdk/labels.py)
-
-Their dependency direction is currently wrong because both files import from one
-another.
-
-## How It Should Be Fixed
-
-The accepted fix is an in-place repair to `summary_sdk_v2`.
-
-The intended approach is:
-
-1. keep [environment/requirements.txt](environment/requirements.txt) on `summary_sdk_v2`
-2. keep the ingest-side packages unchanged
-3. remove the back-edge from `labels.py` to `builder.py`
-4. preserve the existing public summary API
-
-In practical terms, the fix should make [environment/packages/summary_sdk_v2/summary_sdk/labels.py](environment/packages/summary_sdk_v2/summary_sdk/labels.py) stop importing `normalize_sources` from `builder.py`.
-
-After the fix, the dependency direction should become:
-
-```text
-builder.py -> labels.py
-```
-
-instead of:
-
-```text
-builder.py -> labels.py -> builder.py
-```
-
-The smallest correct final shape is:
-
-- `TOTAL_FIELD = "total"` remains in `labels.py`
-- `builder.py` continues importing `TOTAL_FIELD`
-- `labels.py` no longer imports from `builder.py`
-- summary rendering returns the same JSON shape as before
-
-## What A Correct Result Looks Like
-
-After the fix:
-
-- `GET /health` returns `200`
-- `POST /ingest` returns `202`
-- `GET /reports/summary` returns `200`
-- summary output contains `total` and `sources`
-- reinstalling from `/app/requirements.txt` preserves the working state
-
-The oracle implementation of that approach is in
-[solution/solve.sh](solution/solve.sh).
-
-## Wrong Fixes To Reject
-
-The verifier should keep rejecting these classes of fixes:
-
-1. bypassing `summary_sdk` inside [environment/app.py](environment/app.py)
-2. patching only the live installed site-packages copy instead of the source under `/app/`
-3. swapping the app over to `summary_sdk_v1`
-4. changing telemetry, reporting, or schema packages even though ingest is already healthy
-5. making one-off interactive `pip install` repairs that do not survive reinstall
-
-## How The Tests Encode The Intended Fix
-
-[tests/test_outputs.py](tests/test_outputs.py) checks both behavior and fix
-shape:
-
-- functional tests confirm health, ingest, and summary behavior
-- requirement checks ensure the task still uses `summary_sdk_v2`
-- source checks ensure `labels.py` was fixed in place
-- runtime import checks ensure `summary_sdk` is actually importable after reinstall
-
-That combination is what prevents superficial fixes from passing.
