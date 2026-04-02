@@ -177,7 +177,7 @@ running Python environment still has `schema_lib_v2` installed.
 **Trials:** 10  
 **Score:** 4 / 10 (mean = 0.4)
 
-![alt text](results/2026-04-01__21-06-05_BEST_RUN.png)
+![alt text](jobs/2026-04-01__21-06-05_BEST_RUN.png)
 
 ### Failure pattern summary
 
