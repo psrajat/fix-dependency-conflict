@@ -170,7 +170,7 @@ running Python environment still has `schema_lib_v2` installed.
 
 ---
 
-## Results [jobs/](jobs/2026-04-01__21-06-05_BEST_RUN/)
+## Results [(jobs/)](jobs/2026-04-01__21-06-05_BEST_RUN/)
 
 **Best run:** `jobs/2026-04-01__21-06-05_BEST_RUN`  
 **Model:** Kimi K2 (`moonshotai/kimi-k2-0905`) via the `terminus-2` agent  
