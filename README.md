@@ -118,72 +118,12 @@ and depends on `schema_lib_v1`), so the whole dependency tree can converge on
 
 ![alt text](.resources/correct_deps.png)
 
-**Step 1 — Identify the failing call**
-
-Run the service and hit `POST /ingest`. The 500 response body or the Flask log
-will show:
-
 ```
-TypeError: normalize_event() got an unexpected keyword argument 'drop_empty'
-```
-
-Trace it: `app.py` → `telemetry_sdk.encode_event()` → `schema_lib.normalize_event(..., drop_empty=True)`.
-
-**Step 2 — Inspect the installed schema_lib**
-
-```bash
-python -c "import schema_lib; import inspect; print(inspect.signature(schema_lib.normalize_event))"
-# (payload, *, required_fields=()) — this is v2, incompatible
-```
-
-**Step 3 — Survey the vendored alternatives**
-
-```bash
-ls /app/packages/
-# reporting_sdk_v1/  reporting_sdk_v2/  schema_lib_v1/  schema_lib_v2/  telemetry_sdk/
-```
-
-Check `schema_lib_v1`:
-```bash
-grep -n "def normalize_event" /app/packages/schema_lib_v1/schema_lib/__init__.py
-# def normalize_event(payload: dict, *, drop_empty: bool = False) -> dict:
-```
-
-v1 accepts `drop_empty`. Also check `reporting_sdk_v1`:
-```bash
-grep -n "normalize_event" /app/packages/reporting_sdk_v1/reporting_sdk/formatter.py
-# normalized = normalize_event(payload, drop_empty=True)  ← same calling convention
-```
-
-Both `telemetry_sdk` and `reporting_sdk_v1` call `normalize_event` with
-`drop_empty=True`. Switching to the v1 branch makes the tree consistent.
-
-**Step 4 — Edit `requirements.txt`**
-
-```bash
-# Change this:
-# schema-lib @ file:///app/packages/schema_lib_v2
-# reporting-sdk @ file:///app/packages/reporting_sdk_v2
-
-# To this:
+Flask==3.0.3
 schema-lib @ file:///app/packages/schema_lib_v1
+telemetry-sdk @ file:///app/packages/telemetry_sdk
 reporting-sdk @ file:///app/packages/reporting_sdk_v1
 ```
-
-**Step 5 — Reinstall and verify**
-
-```bash
-pip install --no-cache-dir --force-reinstall -r /app/requirements.txt
-python /app/app.py &
-curl -s http://localhost:8000/health
-curl -s -X POST http://localhost:8000/ingest \
-  -H 'Content-Type: application/json' \
-  -d '{"source":"web","event":"click","user_id":"u-1"}'
-curl -s http://localhost:8000/reports/summary
-```
-
-All three should return success. The reinstall step is required — the verifier
-checks the live installed package, not just the text in `requirements.txt`.
 
 **What not to do:**
 - Do not modify `telemetry_sdk/encoder.py` to remove `drop_empty=True` — the verifier checks this
@@ -239,24 +179,11 @@ running Python environment still has `schema_lib_v2` installed.
 
 ![alt text](results/2026-04-01__21-06-05_BEST_RUN.png)
 
-### Outcome by trial
-
-| Trial | Result | Tests passed | Root failure |
-|-------|--------|--------------|--------------|
-| `mRbVRss` | PASS | 9 / 9 | — |
-| `erujfzv` | PASS | 9 / 9 | — |
-| `58Vs2pN` | PASS | 9 / 9 | — |
-| `DUruTfa` | PASS | 9 / 9 | — |
-| `j8wK7ju` | FAIL | 8 / 9 | Correctly updated `requirements.txt` to use v1 SDKs and left all vendor source unchanged, but **did not run `pip install --force-reinstall`**. The live installed schema_lib was still v2, so the runtime import check failed. |
-| `R486uxs` | FAIL | 6 / 9 | Did not switch requirements to v1. Left telemetry_sdk untouched. The app still had schema_lib_v2 installed, causing the ingest endpoint and schema version checks to fail. |
-| `XXfq3dU` | FAIL | 5 / 9 | Did not switch requirements. Also mutated `telemetry_sdk/encoder.py` to remove `drop_empty=True`, making ingest work around the conflict but breaking the structural `test_telemetry_sdk_was_not_rewritten_around_conflict` check. |
-| `3bwAkd6` | FAIL | 5 / 9 | Same pattern as XXfq3dU — mutated telemetry_sdk to remove `drop_empty`, did not fix requirements. |
-| `qHFCQhH` | FAIL | 5 / 9 | Same pattern as XXfq3dU. |
-| `dbkgeV9` | FAIL | 5 / 9 | Same pattern as XXfq3dU. |
+[Results Directory](results/2026-04-01__21-06-05_BEST_RUN/)
 
 ### Failure pattern summary
 
-**"Hack the caller" pattern (4 trials):** The model diagnosed that `telemetry_sdk`
+**"Making changes to SDK" pattern (4 trials):** The model diagnosed that `telemetry_sdk`
 was calling `normalize_event` with an unsupported keyword. Instead of switching
 to a compatible `schema_lib`, it patched `telemetry_sdk/encoder.py` to remove
 the `drop_empty=True` call. This makes the app functional but represents the
