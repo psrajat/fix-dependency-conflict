@@ -1,0 +1,17 @@
+New Terminal Output:
+
+root@4e34e58b8cb8:/app# find packages/ -name "*.py" | head -20
+packages/schema_lib_v2/schema_lib/__init__.py
+packages/schema_lib_v2/build/lib/schema_lib/__init__.py
+packages/reporting_sdk_v1/reporting_sdk/formatter.py
+packages/reporting_sdk_v1/reporting_sdk/__init__.py
+packages/reporting_sdk_v2/reporting_sdk/formatter.py
+packages/reporting_sdk_v2/reporting_sdk/__init__.py
+packages/reporting_sdk_v2/build/lib/reporting_sdk/formatter.py
+packages/reporting_sdk_v2/build/lib/reporting_sdk/__init__.py
+packages/telemetry_sdk/telemetry_sdk/__init__.py
+packages/telemetry_sdk/telemetry_sdk/encoder.py
+packages/telemetry_sdk/build/lib/telemetry_sdk/__init__.py
+packages/telemetry_sdk/build/lib/telemetry_sdk/encoder.py
+packages/schema_lib_v1/schema_lib/__init__.py
+root@4e34e58b8cb8:/app#

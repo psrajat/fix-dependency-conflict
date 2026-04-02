@@ -1,0 +1,10 @@
+{
+  "analysis": "reporting_sdk_v2 has a similar structure to v1 but with a build directory and .egg-info. Let me examine the source code to see if it has different functionality or includes summary features.",
+  "plan": "I'll check the reporting_sdk_v2's __init__.py and source files to see if it has additional functionality compared to v1, particularly any summary-related features.",
+  "commands": [
+    {
+      "keystrokes": "ls -la packages/reporting_sdk_v2/reporting_sdk/\n",
+      "duration": 0.1
+    }
+  ]
+}

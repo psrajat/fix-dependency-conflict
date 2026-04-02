@@ -1,0 +1,11 @@
+Current terminal state:
+New Terminal Output:
+
+root@23ba65ef545c:/app# curl -s -X POST http://localhost:8000/ingest -H "Content-Type: application/json" -d '{"source": "prod", "event": "purchase"}' && echo
+127.0.0.1 - - [01/Apr/2026 21:11:36] "POST /ingest HTTP/1.1" 202 -
+{"accepted":true,"report":{"group":"prod","schema_version":"2.1.0","user_id":null},"telemetry":{"channel":"prod","event":"purchase","schema_version":"2.1.0"}}
+
+root@23ba65ef545c:/app#
+
+
+Are you sure you want to mark the task as complete? This will trigger your solution to be graded and you won't be able to make any further corrections. If so, include "task_complete": true in your JSON response again.

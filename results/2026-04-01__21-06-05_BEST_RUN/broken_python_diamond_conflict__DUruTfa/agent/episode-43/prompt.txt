@@ -1,0 +1,4 @@
+New Terminal Output:
+
+root@93cc3dce2069:/app/packages/telemetry_sdk# cd /app
+root@93cc3dce2069:/app#

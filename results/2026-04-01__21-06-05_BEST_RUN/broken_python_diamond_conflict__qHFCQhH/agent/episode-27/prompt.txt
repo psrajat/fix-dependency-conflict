@@ -1,0 +1,4 @@
+New Terminal Output:
+
+root@b9cae6d08726:/app# sed -i 's/#from summary_sdk import render_summary/from summary_sdk import render_summary/' app.py
+root@b9cae6d08726:/app#

@@ -1,0 +1,5 @@
+New Terminal Output:
+
+root@371a193e1ac4:/app# grep -n "reporting_sdk" app.py
+5:from reporting_sdk import build_report_record
+root@371a193e1ac4:/app#

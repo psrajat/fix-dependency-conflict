@@ -1,0 +1,4 @@
+New Terminal Output:
+
+root@93cc3dce2069:/app# pkill -f "python app.py"
+root@93cc3dce2069:/app#

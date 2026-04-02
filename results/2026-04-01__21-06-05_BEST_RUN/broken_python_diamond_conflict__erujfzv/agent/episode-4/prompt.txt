@@ -1,0 +1,9 @@
+New Terminal Output:
+
+root@d8be9b83f545:/app# ls -la packages/reporting_sdk_v1/
+total 16
+drwxr-xr-x 3 root root 4096 Apr  1 11:47 .
+drwxr-xr-x 1 root root 4096 Apr  1 21:06 ..
+-rw-r--r-- 1 root root  213 Apr  1 11:55 pyproject.toml
+drwxr-xr-x 2 root root 4096 Apr  1 11:47 reporting_sdk
+root@d8be9b83f545:/app#

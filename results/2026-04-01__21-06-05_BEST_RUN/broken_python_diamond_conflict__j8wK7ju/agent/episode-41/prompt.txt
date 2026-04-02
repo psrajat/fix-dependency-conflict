@@ -1,0 +1,6 @@
+New Terminal Output:
+
+root@89d364faac72:/app# python -c "import sys; sys.path.insert(0, '/app/packages/schema_lib_v1'); sys.path.insert(0, '/app/packages'); import reporting_sdk; pri
+nt('Reporting SDK file:', reporting_sdk.__file__)"
+Reporting SDK file: /usr/local/lib/python3.12/site-packages/reporting_sdk/__init__.py
+root@89d364faac72:/app#

@@ -1,0 +1,4 @@
+New Terminal Output:
+
+root@371a193e1ac4:/app# find packages/ -name '*summary*' -type d
+root@371a193e1ac4:/app#

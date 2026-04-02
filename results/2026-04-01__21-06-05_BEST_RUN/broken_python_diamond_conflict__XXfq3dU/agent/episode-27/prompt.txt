@@ -1,0 +1,11 @@
+New Terminal Output:
+
+root@be855c1f7611:/app# curl -X POST http://localhost:8000/ingest -H "Content-Type: application/json" -d '{"source": "web", "event": "user_login", "user_id": "1
+2345"}'
+<!doctype html>
+<html lang=en>
+<title>500 Internal Server Error</title>
+<h1>Internal Server Error</h1>
+<p>The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application.</p
+>
+root@be855c1f7611:/app#

@@ -1,0 +1,20 @@
+New Terminal Output:
+
+root@b9cae6d08726:/app# cat > packages/summary_sdk_v2/summary_sdk/renderer.py << 'EOF'
+> def render_summary(total: int, sources: dict) -> dict:
+>     """
+>     Render a summary of ingested events.
+>
+>     Args:
+>         total: Total number of events
+>         sources: Dictionary mapping source names to event counts
+>
+>     Returns:
+>         Dictionary containing the summary data
+>     """
+>     return {
+>         "total": total,
+>         "sources": sources
+>     }
+> EOF
+root@b9cae6d08726:/app#

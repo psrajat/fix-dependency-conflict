@@ -1,0 +1,6 @@
+New Terminal Output:
+
+Port 8000 is in use by another program. Either identify and stop that program, or start the server with a different port.
+kill %1
+[2]+  Exit 1                  PYTHONPATH=/app/packages python app.py
+root@371a193e1ac4:/app#

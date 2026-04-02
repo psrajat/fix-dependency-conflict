@@ -1,0 +1,10 @@
+{
+  "analysis": "Excellent! The /ingest endpoint is working perfectly with the complete SDK integration. I can see that both telemetry and reporting SDKs are functioning correctly, using schema_version \"1.8.2\" which confirms the version compatibility. Now let me test the /reports/summary endpoint to verify the summary SDK is working correctly.",
+  "plan": "I'll test the /reports/summary endpoint to verify that the newly created summary SDK with render_summary function is working correctly and providing the expected formatted output.",
+  "commands": [
+    {
+      "keystrokes": "curl -X GET http://localhost:8000/reports/summary\n",
+      "duration": 1.0
+    }
+  ]
+}

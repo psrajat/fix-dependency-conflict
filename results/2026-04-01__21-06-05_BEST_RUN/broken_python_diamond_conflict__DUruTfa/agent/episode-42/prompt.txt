@@ -1,0 +1,18 @@
+New Terminal Output:
+
+ERROR: No matching distribution found for schema-lib<3,>=1.8
+
+[notice] A new release of pip is available: 24.0 -> 26.0.1
+[notice] To update, run: pip install --upgrade pip
+root@93cc3dce2069:/app/packages/telemetry_sdk# cat pyproject.toml
+[build-system]
+requires = ["setuptools==75.8.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "telemetry-sdk"
+version = "1.4.0"
+dependencies = [
+  "schema-lib>=1.8,<3",
+]
+root@93cc3dce2069:/app/packages/telemetry_sdk#

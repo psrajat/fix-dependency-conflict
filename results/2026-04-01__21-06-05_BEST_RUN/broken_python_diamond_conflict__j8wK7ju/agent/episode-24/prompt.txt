@@ -1,0 +1,5 @@
+New Terminal Output:
+
+root@89d364faac72:/app# python -c "import schema_lib; print(schema_lib.__file__)"
+/usr/local/lib/python3.12/site-packages/schema_lib/__init__.py
+root@89d364faac72:/app#

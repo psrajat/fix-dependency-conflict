@@ -1,0 +1,14 @@
+New Terminal Output:
+
+root@be855c1f7611:/app# pip install --force-reinstall file:///app/packages/telemetry_sdk
+Processing ./packages/telemetry_sdk
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... done
+  Preparing metadata (pyproject.toml) ... done
+INFO: pip is looking at multiple versions of telemetry-sdk to determine which version is compatible with other requirements. This could take a while.
+ERROR: Could not find a version that satisfies the requirement schema-lib<3,>=1.8 (from telemetry-sdk) (from versions: none)
+ERROR: No matching distribution found for schema-lib<3,>=1.8
+
+[notice] A new release of pip is available: 24.0 -> 26.0.1
+[notice] To update, run: pip install --upgrade pip
+root@be855c1f7611:/app#

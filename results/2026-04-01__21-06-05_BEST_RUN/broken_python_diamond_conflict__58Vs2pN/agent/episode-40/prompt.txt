@@ -1,0 +1,11 @@
+New Terminal Output:
+
+root@87ed7ee2c35d:/app# cat requirements.txt
+Flask==3.0.3
+schema-lib @ file:///app/packages/schema_lib_v1
+# schema-lib @ file:///app/packages/schema_lib_v2
+telemetry-sdk @ file:///app/packages/telemetry_sdk
+reporting-sdk @ file:///app/packages/reporting_sdk_v1
+# reporting-sdk @ file:///app/packages/reporting_sdk_v2
+# summary-sdk @ file:///app/packages/summary_sdk_v2
+root@87ed7ee2c35d:/app#

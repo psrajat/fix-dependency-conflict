@@ -1,0 +1,4 @@
+New Terminal Output:
+
+root@36a7986e2147:/app# kill %1
+root@36a7986e2147:/app#

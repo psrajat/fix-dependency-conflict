@@ -1,0 +1,4 @@
+New Terminal Output:
+
+root@36a7986e2147:/app# cp requirements.txt requirements.txt.backup
+root@36a7986e2147:/app#

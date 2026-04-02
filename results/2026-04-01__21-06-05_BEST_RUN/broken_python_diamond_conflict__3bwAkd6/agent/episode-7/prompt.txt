@@ -1,0 +1,5 @@
+New Terminal Output:
+
+root@4e34e58b8cb8:/app# cat packages/reporting_sdk_v2/reporting_sdk/__init__.py
+from .formatter import build_report_record
+root@4e34e58b8cb8:/app#

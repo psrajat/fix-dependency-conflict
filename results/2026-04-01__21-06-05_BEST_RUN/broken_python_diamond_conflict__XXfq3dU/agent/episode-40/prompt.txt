@@ -1,0 +1,5 @@
+New Terminal Output:
+
+root@be855c1f7611:/app# curl -X GET http://localhost:8000/reports/summary
+{"sources":{"mobile":1,"web":2},"total":3}
+root@be855c1f7611:/app#

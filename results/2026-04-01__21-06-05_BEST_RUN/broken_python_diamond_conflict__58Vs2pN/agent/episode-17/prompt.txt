@@ -1,0 +1,5 @@
+New Terminal Output:
+
+root@87ed7ee2c35d:/app# python -c "from reporting_sdk import build_report_record; print('build_report_record imported successfully')"
+build_report_record imported successfully
+root@87ed7ee2c35d:/app#

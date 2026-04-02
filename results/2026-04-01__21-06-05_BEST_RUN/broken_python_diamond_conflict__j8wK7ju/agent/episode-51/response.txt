@@ -1,0 +1,10 @@
+{
+  "analysis": "Good, I've created the directory structure for the summary SDK. Now I need to create the __init__.py file that exports the render_summary function, and then implement the render_summary function based on what the original code expected.",
+  "plan": "I'll create the __init__.py file for the summary SDK that imports the render_summary function, then create a summary.py file that implements the render_summary function based on the usage pattern in the original app.py code.",
+  "commands": [
+    {
+      "keystrokes": "cat > packages/summary_sdk/summary_sdk/__init__.py << 'EOF'\nfrom .summary import render_summary\nEOF\n",
+      "duration": 0.1
+    }
+  ]
+}

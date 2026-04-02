@@ -1,0 +1,6 @@
+New Terminal Output:
+
+root@93cc3dce2069:/app# python -c "from telemetry_sdk import encode_event; result = encode_event({'source': 'test', 'event': 'test_event'}); print('Success:', r
+esult)"
+Success: {'channel': 'test', 'event': 'test_event', 'schema_version': '1.8.2'}
+root@93cc3dce2069:/app#

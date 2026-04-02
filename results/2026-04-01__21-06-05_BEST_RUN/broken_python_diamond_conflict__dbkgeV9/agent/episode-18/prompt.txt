@@ -1,0 +1,12 @@
+New Terminal Output:
+
+root@23ba65ef545c:/app# find packages/ -name "*.py" -exec grep -l "normalize_event" {} \;
+packages/schema_lib_v2/schema_lib/__init__.py
+packages/schema_lib_v2/build/lib/schema_lib/__init__.py
+packages/reporting_sdk_v1/reporting_sdk/formatter.py
+packages/reporting_sdk_v2/reporting_sdk/formatter.py
+packages/reporting_sdk_v2/build/lib/reporting_sdk/formatter.py
+packages/telemetry_sdk/telemetry_sdk/encoder.py
+packages/telemetry_sdk/build/lib/telemetry_sdk/encoder.py
+packages/schema_lib_v1/schema_lib/__init__.py
+root@23ba65ef545c:/app#

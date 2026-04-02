@@ -1,0 +1,10 @@
+New Terminal Output:
+
+root@371a193e1ac4:/app# ls -la /usr/local/lib/python3.12/site-packages/reporting_sdk/
+total 24
+drwxr-xr-x 3 root root 4096 Apr  1 21:06 .
+drwxr-xr-x 1 root root 4096 Apr  1 21:06 ..
+-rw-r--r-- 1 root root   43 Apr  1 21:06 __init__.py
+drwxr-xr-x 2 root root 4096 Apr  1 21:06 __pycache__
+-rw-r--r-- 1 root root  328 Apr  1 21:06 formatter.py
+root@371a193e1ac4:/app#

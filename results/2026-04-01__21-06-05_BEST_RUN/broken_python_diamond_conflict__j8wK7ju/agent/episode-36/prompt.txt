@@ -1,0 +1,6 @@
+New Terminal Output:
+
+root@89d364faac72:/app# python -c "import sys; sys.path.insert(0, '/app/packages/schema_lib_v1'); import schema_lib; print('Schema lib file:', schema_lib.__file
+__)"
+Schema lib file: /app/packages/schema_lib_v1/schema_lib/__init__.py
+root@89d364faac72:/app#

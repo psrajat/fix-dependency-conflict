@@ -1,0 +1,4 @@
+New Terminal Output:
+
+root@89d364faac72:/app# mkdir -p packages/summary_sdk/summary_sdk
+root@89d364faac72:/app#

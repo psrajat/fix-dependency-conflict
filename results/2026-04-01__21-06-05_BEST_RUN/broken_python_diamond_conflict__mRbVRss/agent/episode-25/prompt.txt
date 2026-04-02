@@ -1,0 +1,7 @@
+New Terminal Output:
+
+Press CTRL+C to quit
+curl -X GET http://localhost:8000/health
+127.0.0.1 - - [01/Apr/2026 21:08:32] "GET /health HTTP/1.1" 200 -
+{"status":"ok"}
+root@36a7986e2147:/app#

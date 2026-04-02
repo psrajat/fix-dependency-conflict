@@ -1,0 +1,383 @@
+[?2004hroot@be855c1f7611:/app# asciinema rec --stdin /logs/agent/recording.cast
+[?2004l[0;32masciinema: recording asciicast to /logs/agent/recording.cast[0m
+[0;32masciinema: press <ctrl-d> or type "exit" when you're done[0m
+[?2004hroot@be855c1f7611:/app# clear
+[?2004l[H[J[3J[?2004hroot@be855c1f7611:/app# ls -la
+[?2004ltotal 28
+drwxr-xr-x 1 root root 4096 Apr  1 20:58 .
+drwxr-xr-x 1 root root 4096 Apr  1 21:06 ..
+-rw-r--r-- 1 root root  481 Apr  1 16:06 Dockerfile
+-rw-r--r-- 1 root root 1388 Apr  1 20:57 app.py
+-rw-r--r-- 1 root root   30 Apr  1 11:55 entrypoint.sh
+drwxr-xr-x 1 root root 4096 Apr  1 21:06 packages
+-rw-r--r-- 1 root root  324 Apr  1 20:57 requirements.txt
+[?2004hroot@be855c1f7611:/app# cat app.py
+[?2004lfrom collections import Counter
+
+from flask import Flask, jsonify, request
+
+from reporting_sdk import build_report_record
+from telemetry_sdk import encode_event
+
+app = Flask(__name__)
+stored_events = []
+
+
+@app.get("/health")
+def health():
+    return jsonify({"status": "ok"}), 200
+
+
+@app.post("/ingest")
+def ingest():
+    payload = request.get_json(silent=True) or {}
+    if not payload.get("source") or not payload.get("event"):
+        return jsonify({"error": "source and event are required"}), 400
+
+    telemetry = encode_event(payload)
+    report_record = build_report_record(payload)
+
+    stored_events.append(
+        {
+            "source": report_record["group"],
+            "event": telemetry["event"],
+            "user_id": report_record.get("user_id"),
+        }
+    )
+
+    return (
+        jsonify(
+            {
+                "accepted": True,
+                "telemetry": telemetry,
+                "report": report_record,
+            }
+        ),
+        202,
+    )
+
+
+@app.get("/reports/summary")
+def summary():
+    #from summary_sdk import render_summary
+
+    by_source = Counter(event["source"] for event in stored_events)
+    #return jsonify(render_summary(len(stored_events), dict(by_source))), 200
+    return jsonify({"total": len(stored_events), "sources": dict(by_source)}), 200
+
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8000, debug=False)
+[?2004hroot@be855c1f7611:/app# cat requirements.txt
+[?2004lFlask==3.0.3
+# schema-lib @ file:///app/packages/schema_lib_v1
+schema-lib @ file:///app/packages/schema_lib_v2
+telemetry-sdk @ file:///app/packages/telemetry_sdk
+# reporting-sdk @ file:///app/packages/reporting_sdk_v1
+reporting-sdk @ file:///app/packages/reporting_sdk_v2
+# summary-sdk @ file:///app/packages/summary_sdk_v2
+[?2004hroot@be855c1f7611:/app# ls -la packages/
+[?2004ltotal 28
+drwxr-xr-x 1 root root 4096 Apr  1 21:06 .
+drwxr-xr-x 1 root root 4096 Apr  1 20:58 ..
+drwxr-xr-x 3 root root 4096 Apr  1 11:47 reporting_sdk_v1
+drwxr-xr-x 1 root root 4096 Apr  1 21:06 reporting_sdk_v2
+drwxr-xr-x 3 root root 4096 Apr  1 11:47 schema_lib_v1
+drwxr-xr-x 1 root root 4096 Apr  1 21:06 schema_lib_v2
+drwxr-xr-x 1 root root 4096 Apr  1 21:06 telemetry_sdk
+[?2004hroot@be855c1f7611:/app# ls -la packages/telemetry_sdk/
+[?2004ltotal 24
+drwxr-xr-x 1 root root 4096 Apr  1 21:06 .
+drwxr-xr-x 1 root root 4096 Apr  1 21:06 ..
+drwxr-xr-x 4 root root 4096 Apr  1 21:06 build
+-rw-r--r-- 1 root root  184 Apr  1 11:55 pyproject.toml
+drwxr-xr-x 2 root root 4096 Apr  1 11:47 telemetry_sdk
+drwxr-xr-x 2 root root 4096 Apr  1 21:06 telemetry_sdk.egg-info
+[?2004hroot@be855c1f7611:/app# ls -la packages/telemetry_sdk/telemetry_sdk/
+[?2004ltotal 16
+drwxr-xr-x 2 root root 4096 Apr  1 11:47 .
+drwxr-xr-x 1 root root 4096 Apr  1 21:06 ..
+-rw-r--r-- 1 root root   34 Apr  1 12:23 __init__.py
+-rw-r--r-- 1 root root  310 Apr  1 11:55 encoder.py
+[?2004hroot@be855c1f7611:/app# cat packages/telemetry_sdk/telemetry_sdk/__init__.py
+[?2004lfrom .encoder import encode_event
+[?2004hroot@be855c1f7611:/app# cat packages/telemetry_sdk/telemetry_sdk/encoder.py
+[?2004lfrom schema_lib import normalize_event
+
+
+def encode_event(payload: dict) -> dict:
+    normalized = normalize_event(payload, drop_empty=True)
+    return {
+        "channel": normalized.get("source", "unknown"),
+        "event": normalized["event"],
+        "schema_version": normalized["schema_version"],
+    }
+[?2004hroot@be855c1f7611:/app# ls -la packages/reporting_sdk_v2/
+[?2004ltotal 24
+drwxr-xr-x 1 root root 4096 Apr  1 21:06 .
+drwxr-xr-x 1 root root 4096 Apr  1 21:06 ..
+drwxr-xr-x 4 root root 4096 Apr  1 21:06 build
+-rw-r--r-- 1 root root  213 Apr  1 11:55 pyproject.toml
+drwxr-xr-x 2 root root 4096 Apr  1 11:47 reporting_sdk
+drwxr-xr-x 2 root root 4096 Apr  1 21:06 reporting_sdk.egg-info
+[?2004hroot@be855c1f7611:/app# ls -la packages/reporting_sdk_v2/reporting_sdk/
+[?2004ltotal 16
+drwxr-xr-x 2 root root 4096 Apr  1 11:47 .
+drwxr-xr-x 1 root root 4096 Apr  1 21:06 ..
+-rw-r--r-- 1 root root   43 Apr  1 12:23 __init__.py
+-rw-r--r-- 1 root root  328 Apr  1 11:55 formatter.py
+[?2004hroot@be855c1f7611:/app# cat packages/reporting_sdk_v2/reporting_sdk/__init__.py
+[?2004lfrom .formatter import build_report_record
+[?2004hroot@be855c1f7611:/app# cat packages/reporting_sdk_v2/reporting_sdk/formatter.py
+[?2004lfrom schema_lib import normalize_event
+
+
+def build_report_record(payload: dict) -> dict:
+    normalized = normalize_event(payload, required_fields=("source", "event"))
+    return {
+        "group": normalized["source"],
+        "user_id": normalized.get("user_id"),
+        "schema_version": normalized["schema_version"],
+    }
+[?2004hroot@be855c1f7611:/app# ls -la packages/schema_lib_v2/
+[?2004ltotal 24
+drwxr-xr-x 1 root root 4096 Apr  1 21:06 .
+drwxr-xr-x 1 root root 4096 Apr  1 21:06 ..
+drwxr-xr-x 4 root root 4096 Apr  1 21:06 build
+-rw-r--r-- 1 root root  138 Apr  1 11:55 pyproject.toml
+drwxr-xr-x 2 root root 4096 Apr  1 11:47 schema_lib
+drwxr-xr-x 2 root root 4096 Apr  1 21:06 schema_lib.egg-info
+[?2004hroot@be855c1f7611:/app# ls -la packages/schema_lib_v2/schema_lib/
+[?2004ltotal 12
+drwxr-xr-x 2 root root 4096 Apr  1 11:47 .
+drwxr-xr-x 1 root root 4096 Apr  1 21:06 ..
+-rw-r--r-- 1 root root  340 Apr  1 11:55 __init__.py
+[?2004hroot@be855c1f7611:/app# cat packages/schema_lib_v2/schema_lib/__init__.py
+[?2004ldef normalize_event(payload: dict, *, required_fields=()) -> dict:
+    missing = [field for field in required_fields if not payload.get(field)]
+    if missing:
+        raise ValueError(f"missing required fields: {', '.join(sorted(missing))}")
+
+    normalized = dict(payload)
+    normalized["schema_version"] = "2.1.0"
+    return normalized
+[?2004hroot@be855c1f7611:/app# cp packages/telemetry_sdk/telemetry_sdk/encoder.py packages/telemetry_sdk/telemetry_sdk/encoder.py.backup
+[?2004l[?2004hroot@be855c1f7611:/app# cat > packages/telemetry_sdk/telemetry_sdk/encoder.py << 'EOF'
+[?2004l[?2004h> from schema_lib import normalize_event
+[?2004l[?2004h> 
+[?2004l[?2004h> 
+[?2004l[?2004h> def encode_event(payload: dict) -> dict:
+[?2004l[?2004h>     normalized = normalize_event(payload)
+[?2004l[?2004h>     return {
+[?2004l[?2004h>         "channel": normalized.get("source", "unknown"),
+[?2004l[?2004h>         "event": normalized["event"],
+[?2004l[?2004h>         "schema_version": normalized["schema_version"],
+[?2004l[?2004h>     }
+[?2004l[?2004h> EOF
+[?2004l[?2004hroot@be855c1f7611:/app# python app.py > app.log 2>&1 &
+[?2004l[1] 419
+[?2004hroot@be855c1f7611:/app# sleep 2
+[?2004l[?2004hroot@be855c1f7611:/app# cat app.log
+[?2004l * Serving Flask app 'app'
+ * Debug mode: off
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://172.18.0.2:8000
+[33mPress CTRL+C to quit[0m
+[?2004hroot@be855c1f7611:/app# curl -X GET http://localhost:8000/health
+[?2004l{"status":"ok"}
+[?2004hroot@be855c1f7611:/app# curl -X POST http://localhost:8000/ingest -H "Content-Type: application/json" -d '{"source": "web", "event": "user_login", "user_id": "12345"}'
+[?2004l<!doctype html>
+<html lang=en>
+<title>500 Internal Server Error</title>
+<h1>Internal Server Error</h1>
+<p>The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application.</p>
+[?2004hroot@be855c1f7611:/app# tail -20 app.log
+[?2004l  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app.py", line 23, in ingest
+    telemetry = encode_event(payload)
+                ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/telemetry_sdk/encoder.py", line 5, in encode_event
+    normalized = normalize_event(payload, drop_empty=True)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: normalize_event() got an unexpected keyword argument 'drop_empty'
+127.0.0.1 - - [01/Apr/2026 21:08:32] "[35m[1mPOST /ingest HTTP/1.1[0m" 500 -
+[?2004hroot@be855c1f7611:/app# kill %1
+[?2004l[?2004hroot@be855c1f7611:/app# python app.py > app.log 2>&1 &
+[?2004l[2] 554
+[1]   Terminated              python app.py > app.log 2>&1
+[?2004hroot@be855c1f7611:/app# sleep 2
+[?2004l[?2004hroot@be855c1f7611:/app# curl -X POST http://localhost:8000/ingest -H "Content-Type: application/json" -d '{"source": "web", "event": "user_login", "user_id": "12345"}'
+[?2004l<!doctype html>
+<html lang=en>
+<title>500 Internal Server Error</title>
+<h1>Internal Server Error</h1>
+<p>The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application.</p>
+[?2004hroot@be855c1f7611:/app# tail -20 app.log
+[?2004l  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app.py", line 23, in ingest
+    telemetry = encode_event(payload)
+                ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/telemetry_sdk/encoder.py", line 5, in encode_event
+    normalized = normalize_event(payload, drop_empty=True)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: normalize_event() got an unexpected keyword argument 'drop_empty'
+127.0.0.1 - - [01/Apr/2026 21:09:03] "[35m[1mPOST /ingest HTTP/1.1[0m" 500 -
+[?2004hroot@be855c1f7611:/app# pip install --force-reinstall file:///app/packages/telemetry_sdk
+[?2004lProcessing ./packages/telemetry_sdk
+  Installing build dependencies ... [?25l- \ done
+[?25h  Getting requirements to build wheel ... [?25l- done
+[?25h  Preparing metadata (pyproject.toml) ... [?25l- done
+[?25hINFO: pip is looking at multiple versions of telemetry-sdk to determine which version is compatible with other requirements. This could take a while.
+[31mERROR: Could not find a version that satisfies the requirement schema-lib<3,>=1.8 (from telemetry-sdk) (from versions: none)[0m[31m
+[0m[31mERROR: No matching distribution found for schema-lib<3,>=1.8[0m[31m
+[0m
+[1m[[0m[34;49mnotice[0m[1;39;49m][0m[39;49m A new release of pip is available: [0m[31;49m24.0[0m[39;49m -> [0m[32;49m26.0.1[0m
+[1m[[0m[34;49mnotice[0m[1;39;49m][0m[39;49m To update, run: [0m[32;49mpip install --upgrade pip[0m
+[?2004hroot@be855c1f7611:/app# pip install --force-reinstall -r requirements.txt
+[?2004lProcessing ./packages/schema_lib_v2 (from -r requirements.txt (line 3))
+  Installing build dependencies ... [?25l- \ | done
+[?25h  Getting requirements to build wheel ... [?25l- done
+[?25h  Preparing metadata (pyproject.toml) ... [?25l- done
+[?25hProcessing ./packages/telemetry_sdk (from -r requirements.txt (line 4))
+  Installing build dependencies ... [?25l- \ done
+[?25h  Getting requirements to build wheel ... [?25l- done
+[?25h  Preparing metadata (pyproject.toml) ... [?25l- done
+[?25hProcessing ./packages/reporting_sdk_v2 (from -r requirements.txt (line 6))
+  Installing build dependencies ... [?25l- \ | done
+[?25h  Getting requirements to build wheel ... [?25l- done
+[?25h  Preparing metadata (pyproject.toml) ... [?25l- done
+[?25hCollecting Flask==3.0.3 (from -r requirements.txt (line 1))
+  Downloading flask-3.0.3-py3-none-any.whl.metadata (3.2 kB)
+Collecting Werkzeug>=3.0.0 (from Flask==3.0.3->-r requirements.txt (line 1))
+  Downloading werkzeug-3.1.7-py3-none-any.whl.metadata (4.0 kB)
+Collecting Jinja2>=3.1.2 (from Flask==3.0.3->-r requirements.txt (line 1))
+  Downloading jinja2-3.1.6-py3-none-any.whl.metadata (2.9 kB)
+Collecting itsdangerous>=2.1.2 (from Flask==3.0.3->-r requirements.txt (line 1))
+  Downloading itsdangerous-2.2.0-py3-none-any.whl.metadata (1.9 kB)
+Collecting click>=8.1.3 (from Flask==3.0.3->-r requirements.txt (line 1))
+  Downloading click-8.3.1-py3-none-any.whl.metadata (2.6 kB)
+Collecting blinker>=1.6.2 (from Flask==3.0.3->-r requirements.txt (line 1))
+  Downloading blinker-1.9.0-py3-none-any.whl.metadata (1.6 kB)
+Collecting MarkupSafe>=2.0 (from Jinja2>=3.1.2->Flask==3.0.3->-r requirements.txt (line 1))
+  Downloading markupsafe-3.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.7 kB)
+Downloading flask-3.0.3-py3-none-any.whl (101 kB)
+[?25l   [38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/101.7 kB[0m [31m?[0m eta [36m-:--:--[0m[2K   [38;5;70m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m101.7/101.7 kB[0m [31m8.3 MB/s[0m eta [36m0:00:00[0m
+[?25hDownloading blinker-1.9.0-py3-none-any.whl (8.5 kB)
+Downloading click-8.3.1-py3-none-any.whl (108 kB)
+[?25l   [38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/108.3 kB[0m [31m?[0m eta [36m-:--:--[0m[2K   [38;5;70m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m108.3/108.3 kB[0m [31m15.9 MB/s[0m eta [36m0:00:00[0m
+[?25hDownloading itsdangerous-2.2.0-py3-none-any.whl (16 kB)
+Downloading jinja2-3.1.6-py3-none-any.whl (134 kB)
+[?25l   [38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/134.9 kB[0m [31m?[0m eta [36m-:--:--[0m[2K   [38;5;70m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m134.9/134.9 kB[0m [31m26.0 MB/s[0m eta [36m0:00:00[0m
+[?25hDownloading werkzeug-3.1.7-py3-none-any.whl (226 kB)
+[?25l   [38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/226.3 kB[0m [31m?[0m eta [36m-:--:--[0m[2K   [38;5;70m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m226.3/226.3 kB[0m [31m15.4 MB/s[0m eta [36m0:00:00[0m
+[?25hDownloading markupsafe-3.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (22 kB)
+Building wheels for collected packages: schema-lib, telemetry-sdk, reporting-sdk
+  Building wheel for schema-lib (pyproject.toml) ... [?25l- done
+[?25h  Created wheel for schema-lib: filename=schema_lib-2.1.0-py3-none-any.whl size=1333 sha256=38b00d244b31e1b02f2b60b0feb8d2009562d54748b2b89c0215f10ad01d9134
+  Stored in directory: /tmp/pip-ephem-wheel-cache-nqc734u1/wheels/9f/8e/61/e62b9699586397e208fea94c1bc237809399e0f0d88eeb9e2b
+  Building wheel for telemetry-sdk (pyproject.toml) ... [?25l- done
+[?25h  Created wheel for telemetry-sdk: filename=telemetry_sdk-1.4.0-py3-none-any.whl size=1559 sha256=ee30c65844ab13c05d95461aa0f11382903841312471f52134ecf281b5d6dc0d
+  Stored in directory: /tmp/pip-ephem-wheel-cache-nqc734u1/wheels/6c/73/6c/2fe2bbfa198657f8bf40820605b000c1d06a686f002c8a92de
+  Building wheel for reporting-sdk (pyproject.toml) ... [?25l- done
+[?25h  Created wheel for reporting-sdk: filename=reporting_sdk-2.2.0-py3-none-any.whl size=1617 sha256=1b0749613ef2014e195c9c6f7ca76baf8cd99969d4e2eec0405926d022e82c51
+  Stored in directory: /tmp/pip-ephem-wheel-cache-nqc734u1/wheels/90/a3/17/79cb1af231085a7ed0bd9a08ecfbd6ac254aba7971d1a5c90a
+Successfully built schema-lib telemetry-sdk reporting-sdk
+Installing collected packages: schema-lib, telemetry-sdk, reporting-sdk, MarkupSafe, itsdangerous, click, blinker, Werkzeug, Jinja2, Flask
+  Attempting uninstall: schema-lib
+    Found existing installation: schema-lib 2.1.0
+    Uninstalling schema-lib-2.1.0:
+      Successfully uninstalled schema-lib-2.1.0
+  Attempting uninstall: telemetry-sdk
+    Found existing installation: telemetry-sdk 1.4.0
+    Uninstalling telemetry-sdk-1.4.0:
+      Successfully uninstalled telemetry-sdk-1.4.0
+  Attempting uninstall: reporting-sdk
+    Found existing installation: reporting-sdk 2.2.0
+    Uninstalling reporting-sdk-2.2.0:
+      Successfully uninstalled reporting-sdk-2.2.0
+  Attempting uninstall: MarkupSafe
+    Found existing installation: MarkupSafe 3.0.3
+    Uninstalling MarkupSafe-3.0.3:
+      Successfully uninstalled MarkupSafe-3.0.3
+  Attempting uninstall: itsdangerous
+    Found existing installation: itsdangerous 2.2.0
+    Uninstalling itsdangerous-2.2.0:
+      Successfully uninstalled itsdangerous-2.2.0
+  Attempting uninstall: click
+    Found existing installation: click 8.3.1
+    Uninstalling click-8.3.1:
+      Successfully uninstalled click-8.3.1
+  Attempting uninstall: blinker
+    Found existing installation: blinker 1.9.0
+    Uninstalling blinker-1.9.0:
+      Successfully uninstalled blinker-1.9.0
+  Attempting uninstall: Werkzeug
+    Found existing installation: Werkzeug 3.1.7
+    Uninstalling Werkzeug-3.1.7:
+      Successfully uninstalled Werkzeug-3.1.7
+  Attempting uninstall: Jinja2
+    Found existing installation: Jinja2 3.1.6
+    Uninstalling Jinja2-3.1.6:
+      Successfully uninstalled Jinja2-3.1.6
+  Attempting uninstall: Flask
+    Found existing installation: Flask 3.0.3
+    Uninstalling Flask-3.0.3:
+      Successfully uninstalled Flask-3.0.3
+Successfully installed Flask-3.0.3 Jinja2-3.1.6 MarkupSafe-3.0.3 Werkzeug-3.1.7 blinker-1.9.0 click-8.3.1 itsdangerous-2.2.0 reporting-sdk-2.2.0 schema-lib-2.1.0 telemetry-sdk-1.4.0
+[33mWARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv[0m[33m
+[0m
+[1m[[0m[34;49mnotice[0m[1;39;49m][0m[39;49m A new release of pip is available: [0m[31;49m24.0[0m[39;49m -> [0m[32;49m26.0.1[0m
+[1m[[0m[34;49mnotice[0m[1;39;49m][0m[39;49m To update, run: [0m[32;49mpip install --upgrade pip[0m
+[?2004hroot@be855c1f7611:/app# kill %2
+[?2004l[?2004hroot@be855c1f7611:/app# python app.py > app.log 2>&1 &
+[?2004l[3] 738
+[2]   Terminated              python app.py > app.log 2>&1
+[?2004hroot@be855c1f7611:/app# sleep 2
+[?2004l[?2004hroot@be855c1f7611:/app# curl -X GET http://localhost:8000/health
+[?2004l{"status":"ok"}
+[?2004hroot@be855c1f7611:/app# curl -X POST http://localhost:8000/ingest -H "Content-Type: application/json" -d '{"source": "web", "event": "user_login", "user_id": "12345"}'
+[?2004l{"accepted":true,"report":{"group":"web","schema_version":"2.1.0","user_id":"12345"},"telemetry":{"channel":"web","event":"user_login","schema_version":"2.1.0"}}
+[?2004hroot@be855c1f7611:/app# curl -X GET http://localhost:8000/reports/summary
+[?2004l{"sources":{"web":1},"total":1}
+[?2004hroot@be855c1f7611:/app# curl -X POST http://localhost:8000/ingest -H "Content-Type: application/json" -d '{"source": "mobile", "event": "app_open", "user_id": "67890"}'
+[?2004l{"accepted":true,"report":{"group":"mobile","schema_version":"2.1.0","user_id":"67890"},"telemetry":{"channel":"mobile","event":"app_open","schema_version":"2.1.0"}}
+[?2004hroot@be855c1f7611:/app# curl -X POST http://localhost:8000/ingest -H "Content-Type: application/json" -d '{"source": "web", "event": "page_view", "user_id": "11111"}'
+[?2004l{"accepted":true,"report":{"group":"web","schema_version":"2.1.0","user_id":"11111"},"telemetry":{"channel":"web","event":"page_view","schema_version":"2.1.0"}}
+[?2004hroot@be855c1f7611:/app# curl -X GET http://localhost:8000/reports/summary
+[?2004l{"sources":{"mobile":1,"web":2},"total":3}
+[?2004hroot@be855c1f7611:/app# cat packages/telemetry_sdk/telemetry_sdk/encoder.py
+[?2004lfrom schema_lib import normalize_event
+
+
+def encode_event(payload: dict) -> dict:
+    normalized = normalize_event(payload)
+    return {
+        "channel": normalized.get("source", "unknown"),
+        "event": normalized["event"],
+        "schema_version": normalized["schema_version"],
+    }
+[?2004hroot@be855c1f7611:/app# 

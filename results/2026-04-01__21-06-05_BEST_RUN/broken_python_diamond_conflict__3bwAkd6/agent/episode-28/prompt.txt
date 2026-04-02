@@ -1,0 +1,9 @@
+New Terminal Output:
+
+root@4e34e58b8cb8:/app# pip list | grep telemetry
+telemetry-sdk      1.4.0
+
+[notice] A new release of pip is available: 24.0 -> 26.0.1
+[notice] To update, run: pip install --upgrade pip
+root@4e34e58b8cb8:/app# find packages/telemetry_sdk/ -name "*.pyc" -o -name "__pycache__"
+root@4e34e58b8cb8:/app#

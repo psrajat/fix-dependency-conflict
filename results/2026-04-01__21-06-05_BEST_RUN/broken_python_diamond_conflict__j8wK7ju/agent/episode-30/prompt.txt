@@ -1,0 +1,11 @@
+New Terminal Output:
+
+Port 8000 is in use by another program. Either identify and stop that program, or start the server with a different port.
+ps aux | grep python
+root        54  0.0  0.0 101724 22136 pts/1    Sl+  21:06   0:00 /usr/bin/python3 /usr/bin/asciinema rec --stdin /logs/agent/recording.cast
+root        55  0.0  0.0  27964 15776 pts/1    S+   21:06   0:00 /usr/bin/python3 /usr/bin/asciinema rec --stdin /logs/agent/recording.cast
+root        56  0.0  0.0  27976 16292 pts/1    S+   21:06   0:00 /usr/bin/python3 /usr/bin/asciinema rec --stdin /logs/agent/recording.cast
+root       473  0.2  0.1 111392 32000 pts/0    S    21:08   0:00 python app.py
+root       647  0.0  0.0   3744  1792 pts/0    S+   21:09   0:00 grep python
+[2]+  Exit 1                  python app.py
+root@89d364faac72:/app#

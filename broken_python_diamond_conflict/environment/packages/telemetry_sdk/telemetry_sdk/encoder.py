@@ -1,0 +1,10 @@
+from schema_lib import normalize_event
+
+
+def encode_event(payload: dict) -> dict:
+    normalized = normalize_event(payload, drop_empty=True)
+    return {
+        "channel": normalized.get("source", "unknown"),
+        "event": normalized["event"],
+        "schema_version": normalized["schema_version"],
+    }

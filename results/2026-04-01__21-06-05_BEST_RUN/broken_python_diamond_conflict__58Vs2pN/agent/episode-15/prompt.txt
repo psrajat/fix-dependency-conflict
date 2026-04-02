@@ -1,0 +1,5 @@
+New Terminal Output:
+
+root@87ed7ee2c35d:/app# python -c "import telemetry_sdk; print('telemetry_sdk imported successfully')"
+telemetry_sdk imported successfully
+root@87ed7ee2c35d:/app#

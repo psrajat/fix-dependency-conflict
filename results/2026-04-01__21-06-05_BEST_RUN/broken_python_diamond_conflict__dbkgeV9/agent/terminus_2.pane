@@ -1,0 +1,450 @@
+[?2004hroot@23ba65ef545c:/app# asciinema rec --stdin /logs/agent/recording.cast
+[?2004l[0;32masciinema: recording asciicast to /logs/agent/recording.cast[0m
+[0;32masciinema: press <ctrl-d> or type "exit" when you're done[0m
+[?2004hroot@23ba65ef545c:/app# clear
+[?2004l[H[J[3J[?2004hroot@23ba65ef545c:/app# ls -la
+[?2004ltotal 28
+drwxr-xr-x 1 root root 4096 Apr  1 20:58 .
+drwxr-xr-x 1 root root 4096 Apr  1 21:06 ..
+-rw-r--r-- 1 root root  481 Apr  1 16:06 Dockerfile
+-rw-r--r-- 1 root root 1388 Apr  1 20:57 app.py
+-rw-r--r-- 1 root root   30 Apr  1 11:55 entrypoint.sh
+drwxr-xr-x 1 root root 4096 Apr  1 21:06 packages
+-rw-r--r-- 1 root root  324 Apr  1 20:57 requirements.txt
+[?2004hroot@23ba65ef545c:/app# cat app.py
+[?2004lfrom collections import Counter
+
+from flask import Flask, jsonify, request
+
+from reporting_sdk import build_report_record
+from telemetry_sdk import encode_event
+
+app = Flask(__name__)
+stored_events = []
+
+
+@app.get("/health")
+def health():
+    return jsonify({"status": "ok"}), 200
+
+
+@app.post("/ingest")
+def ingest():
+    payload = request.get_json(silent=True) or {}
+    if not payload.get("source") or not payload.get("event"):
+        return jsonify({"error": "source and event are required"}), 400
+
+    telemetry = encode_event(payload)
+    report_record = build_report_record(payload)
+
+    stored_events.append(
+        {
+            "source": report_record["group"],
+            "event": telemetry["event"],
+            "user_id": report_record.get("user_id"),
+        }
+    )
+
+    return (
+        jsonify(
+            {
+                "accepted": True,
+                "telemetry": telemetry,
+                "report": report_record,
+            }
+        ),
+        202,
+    )
+
+
+@app.get("/reports/summary")
+def summary():
+    #from summary_sdk import render_summary
+
+    by_source = Counter(event["source"] for event in stored_events)
+    #return jsonify(render_summary(len(stored_events), dict(by_source))), 200
+    return jsonify({"total": len(stored_events), "sources": dict(by_source)}), 200
+
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8000, debug=False)
+[?2004hroot@23ba65ef545c:/app# ls -la packages/
+[?2004ltotal 28
+drwxr-xr-x 1 root root 4096 Apr  1 21:06 .
+drwxr-xr-x 1 root root 4096 Apr  1 20:58 ..
+drwxr-xr-x 3 root root 4096 Apr  1 11:47 reporting_sdk_v1
+drwxr-xr-x 1 root root 4096 Apr  1 21:06 reporting_sdk_v2
+drwxr-xr-x 3 root root 4096 Apr  1 11:47 schema_lib_v1
+drwxr-xr-x 1 root root 4096 Apr  1 21:06 schema_lib_v2
+drwxr-xr-x 1 root root 4096 Apr  1 21:06 telemetry_sdk
+[?2004hroot@23ba65ef545c:/app# ls -la packages/reporting_sdk_v1/
+[?2004ltotal 16
+drwxr-xr-x 3 root root 4096 Apr  1 11:47 .
+drwxr-xr-x 1 root root 4096 Apr  1 21:06 ..
+-rw-r--r-- 1 root root  213 Apr  1 11:55 pyproject.toml
+drwxr-xr-x 2 root root 4096 Apr  1 11:47 reporting_sdk
+[?2004hroot@23ba65ef545c:/app# ls -la packages/reporting_sdk_v1/reporting_sdk/
+[?2004ltotal 16
+drwxr-xr-x 2 root root 4096 Apr  1 11:47 .
+drwxr-xr-x 3 root root 4096 Apr  1 11:47 ..
+-rw-r--r-- 1 root root   43 Apr  1 12:23 __init__.py
+-rw-r--r-- 1 root root  323 Apr  1 11:55 formatter.py
+[?2004hroot@23ba65ef545c:/app# ls -la packages/reporting_sdk_v2/
+[?2004ltotal 24
+drwxr-xr-x 1 root root 4096 Apr  1 21:06 .
+drwxr-xr-x 1 root root 4096 Apr  1 21:06 ..
+drwxr-xr-x 4 root root 4096 Apr  1 21:06 build
+-rw-r--r-- 1 root root  213 Apr  1 11:55 pyproject.toml
+drwxr-xr-x 2 root root 4096 Apr  1 11:47 reporting_sdk
+drwxr-xr-x 2 root root 4096 Apr  1 21:06 reporting_sdk.egg-info
+[?2004hroot@23ba65ef545c:/app# ls -la packages/telemetry_sdk/
+[?2004ltotal 24
+drwxr-xr-x 1 root root 4096 Apr  1 21:06 .
+drwxr-xr-x 1 root root 4096 Apr  1 21:06 ..
+drwxr-xr-x 4 root root 4096 Apr  1 21:06 build
+-rw-r--r-- 1 root root  184 Apr  1 11:55 pyproject.toml
+drwxr-xr-x 2 root root 4096 Apr  1 11:47 telemetry_sdk
+drwxr-xr-x 2 root root 4096 Apr  1 21:06 telemetry_sdk.egg-info
+[?2004hroot@23ba65ef545c:/app# find packages/ -name "*summary*" -type d
+[?2004l[?2004hroot@23ba65ef545c:/app# cat packages/reporting_sdk_v1/reporting_sdk/__init__.py
+[?2004lfrom .formatter import build_report_record
+[?2004hroot@23ba65ef545c:/app# cat packages/reporting_sdk_v2/reporting_sdk/__init__.py
+[?2004lfrom .formatter import build_report_record
+[?2004hroot@23ba65ef545c:/app# cat packages/telemetry_sdk/telemetry_sdk/__init__.py
+[?2004lfrom .encoder import encode_event
+[?2004hroot@23ba65ef545c:/app# python3 -c "from reporting_sdk import build_report_record; print('reporting_sdk import works')"
+[?2004lreporting_sdk import works
+[?2004hroot@23ba65ef545c:/app# python3 -c "from telemetry_sdk import encode_event; print('telemetry_sdk import works')"
+[?2004ltelemetry_sdk import works
+[?2004hroot@23ba65ef545c:/app# python app.py &
+[?2004l[1] 339
+[?2004hroot@23ba65ef545c:/app#  * Serving Flask app 'app'
+ * Debug mode: off
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://172.26.0.2:8000
+[33mPress CTRL+C to quit[0m
+curl -s http://localhost:8000/health
+[?2004l127.0.0.1 - - [01/Apr/2026 21:07:59] "GET /health HTTP/1.1" 200 -
+{"status":"ok"}
+[?2004hroot@23ba65ef545c:/app# curl -s -X POST http://localhost:8000/ingest -H "Content-Type: application/json" -d '{"source": "test", "event": "user_login"}'
+[?2004l[2026-04-01 21:08:06,722] ERROR in app: Exception on /ingest [POST]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app.py", line 23, in ingest
+    telemetry = encode_event(payload)
+                ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/telemetry_sdk/encoder.py", line 5, in encode_event
+    normalized = normalize_event(payload, drop_empty=True)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: normalize_event() got an unexpected keyword argument 'drop_empty'
+127.0.0.1 - - [01/Apr/2026 21:08:06] "[35m[1mPOST /ingest HTTP/1.1[0m" 500 -
+<!doctype html>
+<html lang=en>
+<title>500 Internal Server Error</title>
+<h1>Internal Server Error</h1>
+<p>The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application.</p>
+[?2004hroot@23ba65ef545c:/app# cat packages/telemetry_sdk/telemetry_sdk/encoder.py
+[?2004lfrom schema_lib import normalize_event
+
+
+def encode_event(payload: dict) -> dict:
+    normalized = normalize_event(payload, drop_empty=True)
+    return {
+        "channel": normalized.get("source", "unknown"),
+        "event": normalized["event"],
+        "schema_version": normalized["schema_version"],
+    }
+[?2004hroot@23ba65ef545c:/app# find packages/ -name "*.py" -exec grep -l "normalize_event" {} \;
+[?2004lpackages/schema_lib_v2/schema_lib/__init__.py
+packages/schema_lib_v2/build/lib/schema_lib/__init__.py
+packages/reporting_sdk_v1/reporting_sdk/formatter.py
+packages/reporting_sdk_v2/reporting_sdk/formatter.py
+packages/reporting_sdk_v2/build/lib/reporting_sdk/formatter.py
+packages/telemetry_sdk/telemetry_sdk/encoder.py
+packages/telemetry_sdk/build/lib/telemetry_sdk/encoder.py
+packages/schema_lib_v1/schema_lib/__init__.py
+[?2004hroot@23ba65ef545c:/app# cat packages/schema_lib_v1/schema_lib/__init__.py
+[?2004ldef normalize_event(payload: dict, *, drop_empty: bool = False) -> dict:
+    normalized = {}
+    for key, value in payload.items():
+        if drop_empty and value in (None, ""):
+            continue
+        normalized[key] = value
+    normalized["schema_version"] = "1.8.2"
+    return normalized
+[?2004hroot@23ba65ef545c:/app# cat packages/schema_lib_v2/schema_lib/__init__.py
+[?2004ldef normalize_event(payload: dict, *, required_fields=()) -> dict:
+    missing = [field for field in required_fields if not payload.get(field)]
+    if missing:
+        raise ValueError(f"missing required fields: {', '.join(sorted(missing))}")
+
+    normalized = dict(payload)
+    normalized["schema_version"] = "2.1.0"
+    return normalized
+[?2004hroot@23ba65ef545c:/app# python3 -c "from schema_lib import normalize_event; import inspect; print(inspect.signature(normalize_event))"
+[?2004l(payload: dict, *, required_fields=()) -> dict
+[?2004hroot@23ba65ef545c:/app# cp packages/telemetry_sdk/telemetry_sdk/encoder.py packages/telemetry_sdk/telemetry_sdk/encoder.py.backup
+[?2004l[?2004hroot@23ba65ef545c:/app# cat > packages/telemetry_sdk/telemetry_sdk/encoder.py << 'EOF'
+[?2004l[?2004h> from schema_lib import normalize_event
+[?2004l[?2004h> 
+[?2004l[?2004h> 
+[?2004l[?2004h> def encode_event(payload: dict) -> dict:
+[?2004l[?2004h>     normalized = normalize_event(payload)
+[?2004l[?2004h>     return {
+[?2004l[?2004h>         "channel": normalized.get("source", "unknown"),
+[?2004l[?2004h>         "event": normalized["event"],
+[?2004l[?2004h>         "schema_version": normalized["schema_version"],
+[?2004l[?2004h>     }
+[?2004l[?2004h> EOF
+[?2004l[?2004hroot@23ba65ef545c:/app# ^C[?2004l[?2004h[?2004l
+[?2004hroot@23ba65ef545c:/app# python app.py &
+[?2004l[2] 564
+[?2004hroot@23ba65ef545c:/app#  * Serving Flask app 'app'
+ * Debug mode: off
+Address already in use
+Port 8000 is in use by another program. Either identify and stop that program, or start the server with a different port.
+pkill -f "python app.py"
+[?2004l[2]+  Exit 1                  python app.py
+[?2004hroot@23ba65ef545c:/app# python app.py &
+[?2004l[2] 602
+[1]   Terminated              python app.py
+[?2004hroot@23ba65ef545c:/app#  * Serving Flask app 'app'
+ * Debug mode: off
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://172.26.0.2:8000
+[33mPress CTRL+C to quit[0m
+curl -s -X POST http://localhost:8000/ingest -H "Content-Type: application/json" -d '{"source": "test", "event": "user_login"}'
+[?2004l[2026-04-01 21:09:14,023] ERROR in app: Exception on /ingest [POST]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app.py", line 23, in ingest
+    telemetry = encode_event(payload)
+                ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/telemetry_sdk/encoder.py", line 5, in encode_event
+    normalized = normalize_event(payload, drop_empty=True)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: normalize_event() got an unexpected keyword argument 'drop_empty'
+127.0.0.1 - - [01/Apr/2026 21:09:14] "[35m[1mPOST /ingest HTTP/1.1[0m" 500 -
+<!doctype html>
+<html lang=en>
+<title>500 Internal Server Error</title>
+<h1>Internal Server Error</h1>
+<p>The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application.</p>
+[?2004hroot@23ba65ef545c:/app# ls -la packages/telemetry_sdk/build/
+[?2004ltotal 20
+drwxr-xr-x 4 root root 4096 Apr  1 21:06 .
+drwxr-xr-x 1 root root 4096 Apr  1 21:06 ..
+drwxr-xr-x 2 root root 4096 Apr  1 21:06 bdist.linux-x86_64
+drwxr-xr-x 3 root root 4096 Apr  1 21:06 lib
+[?2004hroot@23ba65ef545c:/app# ls -la packages/telemetry_sdk/build/lib/
+[?2004ltotal 12
+drwxr-xr-x 3 root root 4096 Apr  1 21:06 .
+drwxr-xr-x 4 root root 4096 Apr  1 21:06 ..
+drwxr-xr-x 2 root root 4096 Apr  1 21:06 telemetry_sdk
+[?2004hroot@23ba65ef545c:/app# rm -rf packages/telemetry_sdk/build/
+[?2004l[?2004hroot@23ba65ef545c:/app# ^C[?2004l[?2004h[?2004l
+[?2004hroot@23ba65ef545c:/app# python app.py &
+[?2004l[3] 716
+[?2004hroot@23ba65ef545c:/app#  * Serving Flask app 'app'
+ * Debug mode: off
+Address already in use
+Port 8000 is in use by another program. Either identify and stop that program, or start the server with a different port.
+pkill -9 python
+[?2004l[3]+  Exit 1                  python app.py
+[?2004hroot@23ba65ef545c:/app# python app.py &
+[?2004l[3] 754
+[2]   Killed                  python app.py
+[?2004hroot@23ba65ef545c:/app#  * Serving Flask app 'app'
+ * Debug mode: off
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://172.26.0.2:8000
+[33mPress CTRL+C to quit[0m
+curl -s -X POST http://localhost:8000/ingest -H "Content-Type: application/json" -d '{"source": "test", "event": "user_login"}'
+[?2004l[2026-04-01 21:09:54,627] ERROR in app: Exception on /ingest [POST]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app.py", line 23, in ingest
+    telemetry = encode_event(payload)
+                ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/telemetry_sdk/encoder.py", line 5, in encode_event
+    normalized = normalize_event(payload, drop_empty=True)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: normalize_event() got an unexpected keyword argument 'drop_empty'
+127.0.0.1 - - [01/Apr/2026 21:09:54] "[35m[1mPOST /ingest HTTP/1.1[0m" 500 -
+<!doctype html>
+<html lang=en>
+<title>500 Internal Server Error</title>
+<h1>Internal Server Error</h1>
+<p>The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application.</p>
+[?2004hroot@23ba65ef545c:/app# cat packages/telemetry_sdk/telemetry_sdk/encoder.py
+[?2004lfrom schema_lib import normalize_event
+
+
+def encode_event(payload: dict) -> dict:
+    normalized = normalize_event(payload)
+    return {
+        "channel": normalized.get("source", "unknown"),
+        "event": normalized["event"],
+        "schema_version": normalized["schema_version"],
+    }
+[?2004hroot@23ba65ef545c:/app# ^C[?2004l[?2004h[?2004l
+[?2004hroot@23ba65ef545c:/app# find packages/ -name "*.pyc" -delete
+[?2004l[?2004hroot@23ba65ef545c:/app# python app.py &
+[?2004l[4] 851
+[?2004hroot@23ba65ef545c:/app#  * Serving Flask app 'app'
+ * Debug mode: off
+Address already in use
+Port 8000 is in use by another program. Either identify and stop that program, or start the server with a different port.
+killall python; sleep 1
+[?2004l[4]+  Exit 1                  python app.py
+[3]+  Terminated              python app.py
+[?2004hroot@23ba65ef545c:/app# python app.py &
+[?2004l[1] 890
+[?2004hroot@23ba65ef545c:/app#  * Serving Flask app 'app'
+ * Debug mode: off
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://172.26.0.2:8000
+[33mPress CTRL+C to quit[0m
+curl -s -X POST http://localhost:8000/ingest -H "Content-Type: application/json" -d '{"source": "test", "event": "user_login"}'
+[?2004l[2026-04-01 21:10:35,172] ERROR in app: Exception on /ingest [POST]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app.py", line 23, in ingest
+    telemetry = encode_event(payload)
+                ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/telemetry_sdk/encoder.py", line 5, in encode_event
+    normalized = normalize_event(payload, drop_empty=True)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: normalize_event() got an unexpected keyword argument 'drop_empty'
+127.0.0.1 - - [01/Apr/2026 21:10:35] "[35m[1mPOST /ingest HTTP/1.1[0m" 500 -
+<!doctype html>
+<html lang=en>
+<title>500 Internal Server Error</title>
+<h1>Internal Server Error</h1>
+<p>The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application.</p>
+[?2004hroot@23ba65ef545c:/app# pip show telemetry_sdk
+[?2004lName: telemetry-sdk
+Version: 1.4.0
+Summary: 
+Home-page: 
+Author: 
+Author-email: 
+License: 
+Location: /usr/local/lib/python3.12/site-packages
+Requires: schema-lib
+Required-by: 
+[?2004hroot@23ba65ef545c:/app# cat /usr/local/lib/python3.12/site-packages/telemetry_sdk/encoder.py
+[?2004lfrom schema_lib import normalize_event
+
+
+def encode_event(payload: dict) -> dict:
+    normalized = normalize_event(payload, drop_empty=True)
+    return {
+        "channel": normalized.get("source", "unknown"),
+        "event": normalized["event"],
+        "schema_version": normalized["schema_version"],
+    }
+[?2004hroot@23ba65ef545c:/app# cp /usr/local/lib/python3.12/site-packages/telemetry_sdk/encoder.py /usr/local/lib/python3.12/site-packages/telemetry_sdk/encoder.py.backup
+[?2004l[?2004hroot@23ba65ef545c:/app# cat > /usr/local/lib/python3.12/site-packages/telemetry_sdk/encoder.py << 'EOF'
+[?2004l[?2004h> from schema_lib import normalize_event
+[?2004l[?2004h> 
+[?2004l[?2004h> 
+[?2004l[?2004h> def encode_event(payload: dict) -> dict:
+[?2004l[?2004h>     normalized = normalize_event(payload)
+[?2004l[?2004h>     return {
+[?2004l[?2004h>         "channel": normalized.get("source", "unknown"),
+[?2004l[?2004h>         "event": normalized["event"],
+[?2004l[?2004h>         "schema_version": normalized["schema_version"],
+[?2004l[?2004h>     }
+[?2004l[?2004h> EOF
+[?2004l[?2004hroot@23ba65ef545c:/app# ^C[?2004l[?2004h[?2004l
+[?2004hroot@23ba65ef545c:/app# python app.py &
+[?2004l[2] 1024
+[?2004hroot@23ba65ef545c:/app#  * Serving Flask app 'app'
+ * Debug mode: off
+Address already in use
+Port 8000 is in use by another program. Either identify and stop that program, or start the server with a different port.
+killall python; sleep 1
+[?2004l[2]+  Exit 1                  python app.py
+[1]+  Terminated              python app.py
+[?2004hroot@23ba65ef545c:/app# python app.py &
+[?2004l[1] 1063
+[?2004hroot@23ba65ef545c:/app#  * Serving Flask app 'app'
+ * Debug mode: off
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://172.26.0.2:8000
+[33mPress CTRL+C to quit[0m
+curl -s -X POST http://localhost:8000/ingest -H "Content-Type: application/json" -d '{"source": "test", "event": "user_login"}'
+[?2004l127.0.0.1 - - [01/Apr/2026 21:11:24] "[35m[1mPOST /ingest HTTP/1.1[0m" 202 -
+{"accepted":true,"report":{"group":"test","schema_version":"2.1.0","user_id":null},"telemetry":{"channel":"test","event":"user_login","schema_version":"2.1.0"}}
+[?2004hroot@23ba65ef545c:/app# curl -s http://localhost:8000/reports/summary
+[?2004l127.0.0.1 - - [01/Apr/2026 21:11:30] "GET /reports/summary HTTP/1.1" 200 -
+{"sources":{"test":1},"total":1}
+[?2004hroot@23ba65ef545c:/app# curl -s -X POST http://localhost:8000/ingest -H "Content-Type: application/json" -d '{"source": "prod", "event": "purchase"}' && echo
+[?2004l127.0.0.1 - - [01/Apr/2026 21:11:36] "[35m[1mPOST /ingest HTTP/1.1[0m" 202 -
+{"accepted":true,"report":{"group":"prod","schema_version":"2.1.0","user_id":null},"telemetry":{"channel":"prod","event":"purchase","schema_version":"2.1.0"}}
+
+[?2004hroot@23ba65ef545c:/app# curl -s http://localhost:8000/reports/summary
+[?2004l127.0.0.1 - - [01/Apr/2026 21:11:44] "GET /reports/summary HTTP/1.1" 200 -
+{"sources":{"prod":1,"test":1},"total":2}
+[?2004hroot@23ba65ef545c:/app# 127.0.0.1 - - [01/Apr/2026 21:11:46] "GET /health HTTP/1.1" 200 -
+127.0.0.1 - - [01/Apr/2026 21:11:46] "GET /health HTTP/1.1" 200 -
+127.0.0.1 - - [01/Apr/2026 21:11:46] "[35m[1mPOST /ingest HTTP/1.1[0m" 202 -
+127.0.0.1 - - [01/Apr/2026 21:11:46] "[31m[1mPOST /ingest HTTP/1.1[0m" 400 -
+127.0.0.1 - - [01/Apr/2026 21:11:46] "[35m[1mPOST /ingest HTTP/1.1[0m" 202 -
+127.0.0.1 - - [01/Apr/2026 21:11:46] "[35m[1mPOST /ingest HTTP/1.1[0m" 202 -
+127.0.0.1 - - [01/Apr/2026 21:11:46] "GET /reports/summary HTTP/1.1" 200 -

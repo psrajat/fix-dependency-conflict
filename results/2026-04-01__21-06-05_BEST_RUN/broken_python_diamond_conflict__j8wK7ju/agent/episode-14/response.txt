@@ -1,0 +1,10 @@
+{
+  "analysis": "The __init__.py is the same as v1. Let me check the formatter.py file to see if the build_report_record implementation is different in v2.",
+  "plan": "I'll examine the formatter.py file in reporting_sdk_v2 to see if it has a different implementation that might include summary functionality or give clues about what the summary SDK should provide.",
+  "commands": [
+    {
+      "keystrokes": "cat packages/reporting_sdk_v2/reporting_sdk/formatter.py\n",
+      "duration": 0.1
+    }
+  ]
+}

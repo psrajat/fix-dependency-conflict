@@ -1,0 +1,4 @@
+New Terminal Output:
+
+root@b9cae6d08726:/app# ^C
+root@b9cae6d08726:/app#

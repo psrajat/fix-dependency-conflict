@@ -1,0 +1,9 @@
+New Terminal Output:
+
+root@4e34e58b8cb8:/app# find . -name "setup.py" -o -name "pyproject.toml" -o -name "setup.cfg"
+./packages/schema_lib_v2/pyproject.toml
+./packages/reporting_sdk_v1/pyproject.toml
+./packages/reporting_sdk_v2/pyproject.toml
+./packages/telemetry_sdk/pyproject.toml
+./packages/schema_lib_v1/pyproject.toml
+root@4e34e58b8cb8:/app#

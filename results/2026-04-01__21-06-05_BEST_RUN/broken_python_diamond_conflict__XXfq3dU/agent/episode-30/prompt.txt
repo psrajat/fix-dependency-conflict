@@ -1,0 +1,20 @@
+New Terminal Output:
+
+root@be855c1f7611:/app# pip install --force-reinstall -r requirements.txt
+Processing ./packages/schema_lib_v2 (from -r requirements.txt (line 3))
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... done
+  Preparing metadata (pyproject.toml) ... done
+Processing ./packages/telemetry_sdk (from -r requirements.txt (line 4))
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... done
+  Preparing metadata (pyproject.toml) ... done
+Processing ./packages/reporting_sdk_v2 (from -r requirements.txt (line 6))
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... done
+  Preparing metadata (pyproject.toml) ... done
+Collecting Flask==3.0.3 (from -r requirements.txt (line 1))
+  Downloading flask-3.0.3-py3-none-any.whl.metadata (3.2 kB)
+Collecting Werkzeug>=3.0.0 (from Flask==3.0.3->-r requirements.txt (line 1))
+  Downloading werkzeug-3.1.7-py3-none-any.whl.metadata (4.0 kB)
+

@@ -1,0 +1,9 @@
+New Terminal Output:
+
+root@b9cae6d08726:/app# python app.py &
+[2] 818
+root@b9cae6d08726:/app#  * Serving Flask app 'app'
+ * Debug mode: off
+Address already in use
+Port 8000 is in use by another program. Either identify and stop that program, or start the server with a different port.
+

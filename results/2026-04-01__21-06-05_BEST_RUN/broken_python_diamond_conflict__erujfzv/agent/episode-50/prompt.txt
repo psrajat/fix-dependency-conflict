@@ -1,0 +1,6 @@
+New Terminal Output:
+
+root@d8be9b83f545:/app# curl http://localhost:8000/reports/summary
+127.0.0.1 - - [01/Apr/2026 21:11:20] "GET /reports/summary HTTP/1.1" 200 -
+{"sources":{"mobile":1,"test":1,"web":1},"total":3}
+root@d8be9b83f545:/app#

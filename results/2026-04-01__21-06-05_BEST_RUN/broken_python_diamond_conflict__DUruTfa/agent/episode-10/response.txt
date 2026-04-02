@@ -1,0 +1,10 @@
+{
+  "analysis": "I can see reporting_sdk_v2 also has a reporting_sdk directory. Let me check what's in its __init__.py to see if it has the same build_report_record function or if there are differences.",
+  "plan": "I'll examine the __init__.py in reporting_sdk_v2 to see what functions it exports, then check if there's a summary_sdk package available. After that, I'll look at the requirements.txt to understand the dependency structure.",
+  "commands": [
+    {
+      "keystrokes": "ls -la packages/reporting_sdk_v2/reporting_sdk/\n",
+      "duration": 0.1
+    }
+  ]
+}

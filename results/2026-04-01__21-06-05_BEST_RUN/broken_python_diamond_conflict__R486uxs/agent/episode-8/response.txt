@@ -1,0 +1,10 @@
+{
+  "analysis": "I can see the reporting_sdk has an __init__.py and formatter.py. Let me check what's in the __init__.py to see what functions are exported, and also search for any summary_sdk that might be available.",
+  "plan": "I'll check the reporting_sdk __init__.py to see what functions are available, then search for summary_sdk in the packages directory to understand what should be used for the summary endpoint.",
+  "commands": [
+    {
+      "keystrokes": "cat packages/reporting_sdk_v2/reporting_sdk/__init__.py\n",
+      "duration": 0.1
+    }
+  ]
+}

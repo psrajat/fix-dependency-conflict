@@ -1,0 +1,6 @@
+New Terminal Output:
+
+root@89d364faac72:/app# python -c "import sys; sys.path.insert(0, '/app/packages'); from telemetry_sdk import encode_event; import schema_lib; print('Schema lib
+ file:', schema_lib.__file__)"
+Schema lib file: /usr/local/lib/python3.12/site-packages/schema_lib/__init__.py
+root@89d364faac72:/app#

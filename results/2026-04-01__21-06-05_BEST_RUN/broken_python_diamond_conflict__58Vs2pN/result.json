@@ -1,0 +1,148 @@
+{
+    "id": "34bcc7e4-4df7-4cd8-b071-577601c03295",
+    "task_name": "psrajat/broken_python_diamond_conflict",
+    "trial_name": "broken_python_diamond_conflict__58Vs2pN",
+    "trial_uri": "file:///home/psrajat/code/bespokelabs/jobs/2026-04-01__21-06-05/broken_python_diamond_conflict__58Vs2pN",
+    "task_id": {
+        "path": "broken_python_diamond_conflict"
+    },
+    "source": null,
+    "task_checksum": "436da1f97cf95564ffcbf66dafae177507bdde237e1984278a19c42f9894f1e8",
+    "config": {
+        "task": {
+            "path": "broken_python_diamond_conflict",
+            "git_url": null,
+            "git_commit_id": null,
+            "name": null,
+            "ref": null,
+            "overwrite": false,
+            "download_dir": null,
+            "source": null
+        },
+        "trial_name": "broken_python_diamond_conflict__58Vs2pN",
+        "trials_dir": "jobs/2026-04-01__21-06-05",
+        "timeout_multiplier": 1.0,
+        "agent_timeout_multiplier": null,
+        "verifier_timeout_multiplier": null,
+        "agent_setup_timeout_multiplier": null,
+        "environment_build_timeout_multiplier": null,
+        "agent": {
+            "name": "terminus-2",
+            "import_path": null,
+            "model_name": "openrouter/moonshotai/kimi-k2-0905",
+            "override_timeout_sec": null,
+            "override_setup_timeout_sec": null,
+            "max_timeout_sec": null,
+            "kwargs": {},
+            "env": {}
+        },
+        "environment": {
+            "type": "docker",
+            "import_path": null,
+            "force_build": false,
+            "delete": true,
+            "override_cpus": null,
+            "override_memory_mb": null,
+            "override_storage_mb": null,
+            "override_gpus": null,
+            "suppress_override_warnings": false,
+            "mounts_json": null,
+            "env": {},
+            "kwargs": {}
+        },
+        "verifier": {
+            "override_timeout_sec": null,
+            "max_timeout_sec": null,
+            "disable": false
+        },
+        "artifacts": [],
+        "job_id": "e9c32603-cb0a-4cf8-92e1-665b9bd968cd"
+    },
+    "agent_info": {
+        "name": "terminus-2",
+        "version": "2.0.0",
+        "model_info": {
+            "name": "moonshotai/kimi-k2-0905",
+            "provider": "openrouter"
+        }
+    },
+    "agent_result": {
+        "n_input_tokens": 321527,
+        "n_cache_tokens": 312795,
+        "n_output_tokens": 6308,
+        "cost_usd": 0.06262631099999999,
+        "rollout_details": [],
+        "metadata": {
+            "n_episodes": 42,
+            "api_request_times_msec": [
+                7207.4103355407715,
+                4243.477344512939,
+                4054.530143737793,
+                5184.478759765625,
+                4889.460802078247,
+                5173.784971237183,
+                6219.017744064331,
+                3682.6319694519043,
+                4008.7075233459473,
+                4336.2743854522705,
+                5719.630718231201,
+                5145.195722579956,
+                4769.6027755737305,
+                6138.362884521484,
+                5643.118143081665,
+                5091.385126113892,
+                5119.10605430603,
+                3979.1853427886963,
+                4412.56856918335,
+                5971.669912338257,
+                5656.665086746216,
+                4907.167434692383,
+                3807.1725368499756,
+                4535.185098648071,
+                6084.57088470459,
+                5754.7607421875,
+                4926.616668701172,
+                4545.6647872924805,
+                2620.9113597869873,
+                6282.482385635376,
+                4212.016820907593,
+                3421.1769104003906,
+                3245.368242263794,
+                5039.215803146362,
+                3023.2725143432617,
+                5244.045972824097,
+                4475.735425949097,
+                5645.059823989868,
+                3452.399253845215,
+                4164.669990539551,
+                5532.6478481292725,
+                5578.155755996704
+            ],
+            "summarization_count": 0
+        }
+    },
+    "verifier_result": {
+        "rewards": {
+            "reward": 1.0
+        }
+    },
+    "exception_info": null,
+    "started_at": "2026-04-01T21:06:08.024615Z",
+    "finished_at": "2026-04-01T21:10:37.125729Z",
+    "environment_setup": {
+        "started_at": "2026-04-01T21:06:08.025528Z",
+        "finished_at": "2026-04-01T21:06:30.598283Z"
+    },
+    "agent_setup": {
+        "started_at": "2026-04-01T21:06:30.598292Z",
+        "finished_at": "2026-04-01T21:06:32.686339Z"
+    },
+    "agent_execution": {
+        "started_at": "2026-04-01T21:06:32.686397Z",
+        "finished_at": "2026-04-01T21:10:34.231254Z"
+    },
+    "verifier": {
+        "started_at": "2026-04-01T21:10:34.231504Z",
+        "finished_at": "2026-04-01T21:10:35.011997Z"
+    }
+}

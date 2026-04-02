@@ -1,0 +1,10 @@
+{
+  "analysis": "I've created the summary SDK with the render_summary function. Now I need to create a pyproject.toml file for the summary SDK package to make it a proper Python package, similar to the other SDK packages.",
+  "plan": "I'll create a pyproject.toml file for the summary SDK package, then update the app.py to use the summary SDK instead of the manual Counter implementation, and test the complete functionality.",
+  "commands": [
+    {
+      "keystrokes": "cat > packages/summary_sdk/pyproject.toml << 'EOF'\n[build-system]\nrequires = [\"setuptools>=45\", \"wheel\"]\nbuild-backend = \"setuptools.build_meta\"\n\n[project]\nname = \"summary_sdk\"\nversion = \"1.0.0\"\ndescription = \"Summary SDK for event ingestion service\"\nEOF\n",
+      "duration": 0.1
+    }
+  ]
+}

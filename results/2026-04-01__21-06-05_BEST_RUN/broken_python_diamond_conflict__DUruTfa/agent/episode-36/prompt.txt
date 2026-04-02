@@ -1,0 +1,41 @@
+Current Terminal Screen:
+  Attempting uninstall: reporting-sdk
+    Found existing installation: reporting-sdk 2.2.0
+    Uninstalling reporting-sdk-2.2.0:
+      Successfully uninstalled reporting-sdk-2.2.0
+  Attempting uninstall: MarkupSafe
+    Found existing installation: MarkupSafe 3.0.3
+    Uninstalling MarkupSafe-3.0.3:
+      Successfully uninstalled MarkupSafe-3.0.3
+  Attempting uninstall: itsdangerous
+    Found existing installation: itsdangerous 2.2.0
+    Uninstalling itsdangerous-2.2.0:
+      Successfully uninstalled itsdangerous-2.2.0
+  Attempting uninstall: click
+    Found existing installation: click 8.3.1
+    Uninstalling click-8.3.1:
+      Successfully uninstalled click-8.3.1
+  Attempting uninstall: blinker
+    Found existing installation: blinker 1.9.0
+    Uninstalling blinker-1.9.0:
+      Successfully uninstalled blinker-1.9.0
+  Attempting uninstall: Werkzeug
+    Found existing installation: Werkzeug 3.1.7
+    Uninstalling Werkzeug-3.1.7:
+      Successfully uninstalled Werkzeug-3.1.7
+  Attempting uninstall: Jinja2
+    Found existing installation: Jinja2 3.1.6
+    Uninstalling Jinja2-3.1.6:
+      Successfully uninstalled Jinja2-3.1.6
+  Attempting uninstall: Flask
+    Found existing installation: Flask 3.0.3
+    Uninstalling Flask-3.0.3:
+      Successfully uninstalled Flask-3.0.3
+Successfully installed Flask-3.0.3 Jinja2-3.1.6 MarkupSafe-3.0.3 Werkzeug-3.1.7 blinker-1.9.0 click-8.3.1 itsdangerous-2.2.0 reporting-sdk-1.9.0 schema-lib-1.8.
+2 telemetry-sdk-1.4.0
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a v
+irtual environment instead: https://pip.pypa.io/warnings/venv
+
+[notice] A new release of pip is available: 24.0 -> 26.0.1
+[notice] To update, run: pip install --upgrade pip
+root@93cc3dce2069:/app#

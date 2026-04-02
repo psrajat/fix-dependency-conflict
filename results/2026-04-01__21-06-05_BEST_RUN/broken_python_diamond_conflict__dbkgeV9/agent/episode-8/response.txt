@@ -1,0 +1,10 @@
+{
+  "analysis": "There's no summary_sdk directory found, which explains why the import is commented out in app.py. Let me examine the actual SDK code in the existing packages to see what functions are available, and then test the current imports to understand what's working.",
+  "plan": "I'll examine the __init__.py files in the existing SDKs to see what functions are available for import, then test the current imports to see what's working. This will help me understand if the issue is with missing packages, incorrect import paths, or broken SDK functionality.",
+  "commands": [
+    {
+      "keystrokes": "cat packages/reporting_sdk_v1/reporting_sdk/__init__.py\n",
+      "duration": 0.1
+    }
+  ]
+}

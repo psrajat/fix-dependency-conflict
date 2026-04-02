@@ -1,0 +1,6 @@
+New Terminal Output:
+
+root@89d364faac72:/app# cat > packages/summary_sdk/summary_sdk/__init__.py << 'EOF'
+> from .summary import render_summary
+> EOF
+root@89d364faac72:/app#

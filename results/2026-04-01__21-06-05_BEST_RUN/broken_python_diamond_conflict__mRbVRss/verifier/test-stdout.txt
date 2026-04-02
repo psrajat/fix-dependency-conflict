@@ -1,0 +1,17 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-8.3.5, pluggy-1.6.0 -- /usr/local/bin/python
+cachedir: .pytest_cache
+rootdir: /tests
+collecting ... collected 9 items
+
+../tests/test_outputs.py::TestHealthEndpoint::test_health_status PASSED  [ 11%]
+../tests/test_outputs.py::TestIngestEndpoint::test_ingest_accepts_valid_event PASSED [ 22%]
+../tests/test_outputs.py::TestIngestEndpoint::test_ingest_validates_required_fields PASSED [ 33%]
+../tests/test_outputs.py::TestReportingFlow::test_summary_aggregates_sources PASSED [ 44%]
+../tests/test_outputs.py::TestDependencyFixes::test_requirements_select_compatible_reporting_branch PASSED [ 55%]
+../tests/test_outputs.py::TestDependencyFixes::test_inactive_v2_branch_metadata_is_unchanged PASSED [ 66%]
+../tests/test_outputs.py::TestDependencyFixes::test_selected_v1_branch_metadata_is_still_consistent PASSED [ 77%]
+../tests/test_outputs.py::TestDependencyFixes::test_telemetry_sdk_was_not_rewritten_around_conflict PASSED [ 88%]
+../tests/test_outputs.py::TestDependencyFixes::test_installed_schema_version_is_legacy_compatible PASSED [100%]
+
+============================== 9 passed in 6.20s ===============================

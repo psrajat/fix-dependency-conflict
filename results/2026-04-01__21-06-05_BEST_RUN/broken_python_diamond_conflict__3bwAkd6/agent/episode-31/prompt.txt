@@ -1,0 +1,12 @@
+New Terminal Output:
+
+Successfully built telemetry-sdk
+Installing collected packages: telemetry-sdk
+Successfully installed telemetry-sdk-1.4.0
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a v
+irtual environment instead: https://pip.pypa.io/warnings/venv
+
+[notice] A new release of pip is available: 24.0 -> 26.0.1
+[notice] To update, run: pip install --upgrade pip
+root@4e34e58b8cb8:/app# pkill -f "python app.py"
+root@4e34e58b8cb8:/app#

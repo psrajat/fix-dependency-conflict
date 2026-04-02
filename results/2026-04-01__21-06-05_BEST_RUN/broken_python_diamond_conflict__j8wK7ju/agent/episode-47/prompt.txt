@@ -1,0 +1,6 @@
+New Terminal Output:
+
+root@89d364faac72:/app# curl -X GET http://localhost:8000/reports/summary
+127.0.0.1 - - [01/Apr/2026 21:11:20] "GET /reports/summary HTTP/1.1" 200 -
+{"sources":{"test":1},"total":1}
+root@89d364faac72:/app#

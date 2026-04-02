@@ -1,0 +1,11 @@
+New Terminal Output:
+
+root@93cc3dce2069:/app/packages/telemetry_sdk# ls -la
+total 40
+drwxr-xr-x 1 root root 4096 Apr  1 21:06 .
+drwxr-xr-x 1 root root 4096 Apr  1 21:06 ..
+drwxr-xr-x 1 root root 4096 Apr  1 21:06 build
+-rw-r--r-- 1 root root  184 Apr  1 11:55 pyproject.toml
+drwxr-xr-x 2 root root 4096 Apr  1 11:47 telemetry_sdk
+drwxr-xr-x 1 root root 4096 Apr  1 21:10 telemetry_sdk.egg-info
+root@93cc3dce2069:/app/packages/telemetry_sdk#

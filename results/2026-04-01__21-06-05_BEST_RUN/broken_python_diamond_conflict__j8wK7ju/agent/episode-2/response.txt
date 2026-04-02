@@ -1,0 +1,10 @@
+{
+  "analysis": "I can see the issue! In the `/reports/summary` endpoint, there's commented-out code that should be using the `summary_sdk` to render the summary. The current implementation is using a simple Counter and basic JSON response instead of the proper SDK integration. This suggests that the summary SDK integration is broken. The app imports `reporting_sdk` and `telemetry_sdk` at the top, and there are references to `summary_sdk` in the comments. I need to check what packages are available and why the summary SDK isn't working.",
+  "plan": "I'll examine the packages directory to see what SDKs are available, then check the requirements.txt to understand dependencies. After that, I'll look at the specific SDK implementations to understand why the summary SDK isn't working properly.",
+  "commands": [
+    {
+      "keystrokes": "ls -la packages/\n",
+      "duration": 0.1
+    }
+  ]
+}

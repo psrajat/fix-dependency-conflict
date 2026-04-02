@@ -1,0 +1,4 @@
+New Terminal Output:
+
+root@371a193e1ac4:/app# cp packages/telemetry_sdk/telemetry_sdk/encoder.py packages/telemetry_sdk/telemetry_sdk/encoder.py.bak
+root@371a193e1ac4:/app#

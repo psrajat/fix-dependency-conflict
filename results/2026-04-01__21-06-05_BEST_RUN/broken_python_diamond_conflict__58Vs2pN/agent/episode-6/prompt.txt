@@ -1,0 +1,5 @@
+New Terminal Output:
+
+root@87ed7ee2c35d:/app# cat packages/telemetry_sdk/telemetry_sdk/__init__.py
+from .encoder import encode_event
+root@87ed7ee2c35d:/app#

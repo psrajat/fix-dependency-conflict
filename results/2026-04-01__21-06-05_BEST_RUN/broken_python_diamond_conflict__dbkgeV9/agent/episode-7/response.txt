@@ -1,0 +1,10 @@
+{
+  "analysis": "I can see the telemetry_sdk has a similar structure with a telemetry_sdk subdirectory. Let me check for any summary_sdk packages and examine the actual SDK code to understand what's available for import. I also need to check the Python path to see how these packages should be imported.",
+  "plan": "I'll search for any summary_sdk packages, examine the __init__.py files in the existing SDKs to see what functions are available, and then test the current imports to see what's actually working vs what's broken.",
+  "commands": [
+    {
+      "keystrokes": "find packages/ -name \"*summary*\" -type d\n",
+      "duration": 0.1
+    }
+  ]
+}

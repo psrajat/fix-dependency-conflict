@@ -1,0 +1,14 @@
+New Terminal Output:
+
+root@4e34e58b8cb8:/app# cat packages/telemetry_sdk/pyproject.toml
+[build-system]
+requires = ["setuptools==75.8.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "telemetry-sdk"
+version = "1.4.0"
+dependencies = [
+  "schema-lib>=1.8,<3",
+]
+root@4e34e58b8cb8:/app#

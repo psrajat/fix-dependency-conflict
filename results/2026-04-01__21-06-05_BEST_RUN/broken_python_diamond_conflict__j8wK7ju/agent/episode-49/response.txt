@@ -1,0 +1,10 @@
+{
+  "analysis": "There are no summary-related files in the packages directory. Let me check if there are any summary-related functions or references in the existing SDK files that might give clues about what the summary SDK should provide.",
+  "plan": "I'll search for any summary-related keywords in the existing SDK files to see if there are any references or clues about what the missing summary functionality should provide.",
+  "commands": [
+    {
+      "keystrokes": "grep -r -i \"summary\" packages/\n",
+      "duration": 0.1
+    }
+  ]
+}

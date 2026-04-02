@@ -1,0 +1,9 @@
+New Terminal Output:
+
+root@d8be9b83f545:/app# pip install -r requirements.txt --force-reinstall
+Processing ./packages/schema_lib_v1 (from -r requirements.txt (line 2))
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... done
+  Preparing metadata (pyproject.toml) ... done
+Processing ./packages/telemetry_sdk (from -r requirements.txt (line 4))
+  Installing build dependencies ... \

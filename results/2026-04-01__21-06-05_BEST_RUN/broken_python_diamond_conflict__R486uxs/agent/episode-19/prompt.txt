@@ -1,0 +1,12 @@
+New Terminal Output:
+
+^Croot@371a193e1ac4:/app# python app.py &
+[1] 433
+root@371a193e1ac4:/app#  * Serving Flask app 'app'
+ * Debug mode: off
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://172.25.0.2:8000
+Press CTRL+C to quit
+

@@ -1,0 +1,12 @@
+New Terminal Output:
+
+root@b9cae6d08726:/app# cat packages/schema_lib_v1/schema_lib/__init__.py
+def normalize_event(payload: dict, *, drop_empty: bool = False) -> dict:
+    normalized = {}
+    for key, value in payload.items():
+        if drop_empty and value in (None, ""):
+            continue
+        normalized[key] = value
+    normalized["schema_version"] = "1.8.2"
+    return normalized
+root@b9cae6d08726:/app#

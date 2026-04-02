@@ -1,0 +1,6 @@
+New Terminal Output:
+
+root@87ed7ee2c35d:/app# curl -s -X POST http://localhost:8000/ingest -H "Content-Type: application/json" -d '{"source": "web", "event": "page_view"}'
+127.0.0.1 - - [01/Apr/2026 21:10:13] "POST /ingest HTTP/1.1" 202 -
+{"accepted":true,"report":{"group":"web","schema_version":"1.8.2","user_id":null},"telemetry":{"channel":"web","event":"page_view","schema_version":"1.8.2"}}
+root@87ed7ee2c35d:/app#

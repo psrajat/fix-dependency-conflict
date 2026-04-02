@@ -1,0 +1,13 @@
+New Terminal Output:
+
+root@b9cae6d08726:/app# pip install packages/summary_sdk_v2/
+Processing ./packages/summary_sdk_v2
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... done
+  Preparing metadata (pyproject.toml) ... done
+Building wheels for collected packages: summary-sdk
+  Building wheel for summary-sdk (pyproject.toml) ... done
+  Created wheel for summary-sdk: filename=summary_sdk-2.0.0-py3-none-any.whl size=1576 sha256=48761164b62aa4639e925af3d4eca8fe36764c9aa983a0b0412c352a09402e17
+  Stored in directory: /tmp/pip-ephem-wheel-cache-3kw6_v2o/wheels/1c/6f/b8/48cc5eb90d642705c89db50f2c499ec1f0a3cc33443ba46bd9
+Successfully built summary-sdk
+

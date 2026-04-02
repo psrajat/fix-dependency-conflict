@@ -1,0 +1,4 @@
+New Terminal Output:
+
+root@23ba65ef545c:/app# find packages/ -name "*.pyc" -delete
+root@23ba65ef545c:/app#

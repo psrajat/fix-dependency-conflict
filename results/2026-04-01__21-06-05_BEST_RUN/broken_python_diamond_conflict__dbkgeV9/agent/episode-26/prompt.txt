@@ -1,0 +1,6 @@
+New Terminal Output:
+
+Port 8000 is in use by another program. Either identify and stop that program, or start the server with a different port.
+pkill -f "python app.py"
+[2]+  Exit 1                  python app.py
+root@23ba65ef545c:/app#

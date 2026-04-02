@@ -1,0 +1,10 @@
+{
+  "analysis": "There doesn't appear to be a summary_sdk package in the packages directory. Let me check what's actually available in the packages directory to see if there's a summary-related package with a different name.",
+  "plan": "I'll list the contents of the packages directory to see all available packages, then check if there's any summary-related functionality that needs to be enabled.",
+  "commands": [
+    {
+      "keystrokes": "ls -la packages/\n",
+      "duration": 0.1
+    }
+  ]
+}

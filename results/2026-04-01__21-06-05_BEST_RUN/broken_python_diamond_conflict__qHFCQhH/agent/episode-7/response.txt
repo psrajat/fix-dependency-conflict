@@ -1,0 +1,10 @@
+{
+  "analysis": "I can see the telemetry_sdk encoder uses a schema_lib to normalize events. The encoder calls `normalize_event` from schema_lib with `drop_empty=True` parameter. Let me check the reporting_sdk packages to understand their structure and implementation, and also examine the schema_lib packages to see what's available.",
+  "plan": "I'll examine the reporting_sdk packages to understand how they're structured and implemented, then check the schema_lib packages to see what versions are available and how they work. This will help me understand the complete picture of what's working and what's missing for the summary functionality.",
+  "commands": [
+    {
+      "keystrokes": "ls -la packages/reporting_sdk_v2/\n",
+      "duration": 0.1
+    }
+  ]
+}

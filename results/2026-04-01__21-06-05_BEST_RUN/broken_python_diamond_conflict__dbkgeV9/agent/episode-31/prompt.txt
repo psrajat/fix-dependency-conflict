@@ -1,0 +1,4 @@
+New Terminal Output:
+
+root@23ba65ef545c:/app# rm -rf packages/telemetry_sdk/build/
+root@23ba65ef545c:/app#

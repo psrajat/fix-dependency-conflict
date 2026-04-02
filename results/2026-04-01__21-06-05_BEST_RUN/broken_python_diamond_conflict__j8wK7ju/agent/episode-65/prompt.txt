@@ -1,0 +1,10 @@
+New Terminal Output:
+
+root@89d364faac72:/app# ls -la packages/summary_sdk/summary_sdk/
+total 20
+drwxr-xr-x 3 root root 4096 Apr  1 21:12 .
+drwxr-xr-x 3 root root 4096 Apr  1 21:11 ..
+-rw-r--r-- 1 root root   36 Apr  1 21:11 __init__.py
+drwxr-xr-x 2 root root 4096 Apr  1 21:12 __pycache__
+-rw-r--r-- 1 root root  360 Apr  1 21:11 summary.py
+root@89d364faac72:/app#

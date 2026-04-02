@@ -1,0 +1,5 @@
+New Terminal Output:
+
+root@23ba65ef545c:/app# python3 -c "from telemetry_sdk import encode_event; print('telemetry_sdk import works')"
+telemetry_sdk import works
+root@23ba65ef545c:/app#

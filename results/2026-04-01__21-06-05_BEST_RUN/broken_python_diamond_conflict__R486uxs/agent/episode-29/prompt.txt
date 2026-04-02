@@ -1,0 +1,5 @@
+New Terminal Output:
+
+root@371a193e1ac4:/app# sed -i 's/from schema_lib import normalize_event/from packages.schema_lib_v1.schema_lib import normalize_event/' packages/telemetry_sdk/
+telemetry_sdk/encoder.py
+root@371a193e1ac4:/app#

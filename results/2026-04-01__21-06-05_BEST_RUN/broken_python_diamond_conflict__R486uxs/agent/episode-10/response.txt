@@ -1,0 +1,10 @@
+{
+  "analysis": "No summary_sdk directory found. Let me check if there are any files with 'summary' in the name, and also look at the schema_lib directories since they might contain relevant functionality.",
+  "plan": "I'll search for any files containing 'summary' in their names, then examine the schema_lib directories to see if they might contain the summary functionality that should be used.",
+  "commands": [
+    {
+      "keystrokes": "find packages/ -name '*summary*' -type f\n",
+      "duration": 0.1
+    }
+  ]
+}

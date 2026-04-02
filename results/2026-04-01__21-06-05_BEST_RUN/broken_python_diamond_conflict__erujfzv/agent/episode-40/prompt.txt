@@ -1,0 +1,8 @@
+New Terminal Output:
+
+root@d8be9b83f545:/app# pip install --force-reinstall packages/telemetry_sdk
+Processing ./packages/telemetry_sdk
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... done
+  Preparing metadata (pyproject.toml) ... done
+

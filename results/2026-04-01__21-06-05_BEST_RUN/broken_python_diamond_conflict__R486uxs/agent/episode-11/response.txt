@@ -1,0 +1,10 @@
+{
+  "analysis": "No summary-related files found. Let me check the schema_lib directories to see if they might contain the summary functionality, and then try to start the service to test what's currently working and what's broken.",
+  "plan": "I'll examine the schema_lib directories to see what's available, then try to start the service and test the endpoints to understand the current state and identify what's broken.",
+  "commands": [
+    {
+      "keystrokes": "ls -la packages/schema_lib_v2/\n",
+      "duration": 0.1
+    }
+  ]
+}

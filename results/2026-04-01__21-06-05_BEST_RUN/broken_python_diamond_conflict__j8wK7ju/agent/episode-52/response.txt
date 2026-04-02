@@ -1,0 +1,10 @@
+{
+  "analysis": "I've created the __init__.py file for the summary SDK. Now I need to implement the render_summary function in a summary.py file. Based on the original app.py code, the function should take two parameters: the total count and the sources dictionary, and return a formatted summary.",
+  "plan": "I'll create the summary.py file that implements the render_summary function. Based on the usage in app.py, it should take (total_count, sources_dict) and return a formatted dictionary that can be jsonified.",
+  "commands": [
+    {
+      "keystrokes": "cat > packages/summary_sdk/summary_sdk/summary.py << 'EOF'\ndef render_summary(total: int, sources: dict) -> dict:\n    \"\"\"\n    Render a summary of event ingestion data.\n    \n    Args:\n        total: Total number of events\n        sources: Dictionary mapping source names to event counts\n    \n    Returns:\n        Formatted summary dictionary\n    \"\"\"\n    return {\n        \"total\": total,\n        \"sources\": sources\n    }\nEOF\n",
+      "duration": 0.1
+    }
+  ]
+}

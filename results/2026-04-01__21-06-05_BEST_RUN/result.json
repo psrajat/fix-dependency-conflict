@@ -1,0 +1,40 @@
+{
+    "id": "e9c32603-cb0a-4cf8-92e1-665b9bd968cd",
+    "started_at": "2026-04-01T21:06:06.825468",
+    "finished_at": "2026-04-01T21:13:40.830981",
+    "n_total_trials": 10,
+    "stats": {
+        "n_trials": 10,
+        "n_errors": 0,
+        "evals": {
+            "terminus-2__moonshotai-kimi-k2-0905__adhoc": {
+                "n_trials": 10,
+                "n_errors": 0,
+                "metrics": [
+                    {
+                        "mean": 0.4
+                    }
+                ],
+                "reward_stats": {
+                    "reward": {
+                        "0.0": [
+                            "broken_python_diamond_conflict__XXfq3dU",
+                            "broken_python_diamond_conflict__j8wK7ju",
+                            "broken_python_diamond_conflict__3bwAkd6",
+                            "broken_python_diamond_conflict__qHFCQhH",
+                            "broken_python_diamond_conflict__R486uxs",
+                            "broken_python_diamond_conflict__dbkgeV9"
+                        ],
+                        "1.0": [
+                            "broken_python_diamond_conflict__mRbVRss",
+                            "broken_python_diamond_conflict__erujfzv",
+                            "broken_python_diamond_conflict__58Vs2pN",
+                            "broken_python_diamond_conflict__DUruTfa"
+                        ]
+                    }
+                },
+                "exception_stats": {}
+            }
+        }
+    }
+}

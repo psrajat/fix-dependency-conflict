@@ -1,0 +1,4 @@
+New Terminal Output:
+
+root@36a7986e2147:/app# ls -la packages/ | grep summary
+root@36a7986e2147:/app#

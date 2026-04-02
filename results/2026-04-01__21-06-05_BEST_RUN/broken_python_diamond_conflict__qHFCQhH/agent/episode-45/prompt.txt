@@ -1,0 +1,25 @@
+New Terminal Output:
+
+root@b9cae6d08726:/app# pip install --force-reinstall --no-deps packages/telemetry_sdk/
+Processing ./packages/telemetry_sdk
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... done
+  Preparing metadata (pyproject.toml) ... done
+Building wheels for collected packages: telemetry-sdk
+  Building wheel for telemetry-sdk (pyproject.toml) ... done
+  Created wheel for telemetry-sdk: filename=telemetry_sdk-1.4.0-py3-none-any.whl size=1559 sha256=ef39560eb1065549b00e019cef985fdfb30d9675ef2187f549f4511b680dc9
+ee
+  Stored in directory: /tmp/pip-ephem-wheel-cache-akqy00om/wheels/6c/73/6c/2fe2bbfa198657f8bf40820605b000c1d06a686f002c8a92de
+Successfully built telemetry-sdk
+Installing collected packages: telemetry-sdk
+  Attempting uninstall: telemetry-sdk
+    Found existing installation: telemetry-sdk 1.4.0
+    Uninstalling telemetry-sdk-1.4.0:
+      Successfully uninstalled telemetry-sdk-1.4.0
+Successfully installed telemetry-sdk-1.4.0
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a v
+irtual environment instead: https://pip.pypa.io/warnings/venv
+
+[notice] A new release of pip is available: 24.0 -> 26.0.1
+[notice] To update, run: pip install --upgrade pip
+root@b9cae6d08726:/app#

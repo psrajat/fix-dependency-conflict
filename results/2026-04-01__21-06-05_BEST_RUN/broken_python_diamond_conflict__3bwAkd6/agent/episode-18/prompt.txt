@@ -1,0 +1,7 @@
+New Terminal Output:
+
+root@4e34e58b8cb8:/app# find packages/ -name "*.py" -path "*/schema_lib/*" | xargs grep -l "def normalize_event"
+packages/schema_lib_v2/schema_lib/__init__.py
+packages/schema_lib_v2/build/lib/schema_lib/__init__.py
+packages/schema_lib_v1/schema_lib/__init__.py
+root@4e34e58b8cb8:/app#

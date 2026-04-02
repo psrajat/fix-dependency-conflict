@@ -1,0 +1,9 @@
+New Terminal Output:
+
+root@be855c1f7611:/app# ls -la packages/reporting_sdk_v2/reporting_sdk/
+total 16
+drwxr-xr-x 2 root root 4096 Apr  1 11:47 .
+drwxr-xr-x 1 root root 4096 Apr  1 21:06 ..
+-rw-r--r-- 1 root root   43 Apr  1 12:23 __init__.py
+-rw-r--r-- 1 root root  328 Apr  1 11:55 formatter.py
+root@be855c1f7611:/app#

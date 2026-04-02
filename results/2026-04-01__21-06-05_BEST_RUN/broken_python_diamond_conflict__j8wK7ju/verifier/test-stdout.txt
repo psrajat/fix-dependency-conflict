@@ -1,0 +1,29 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-8.3.5, pluggy-1.6.0 -- /usr/local/bin/python
+cachedir: .pytest_cache
+rootdir: /tests
+collecting ... collected 9 items
+
+../tests/test_outputs.py::TestHealthEndpoint::test_health_status PASSED  [ 11%]
+../tests/test_outputs.py::TestIngestEndpoint::test_ingest_accepts_valid_event PASSED [ 22%]
+../tests/test_outputs.py::TestIngestEndpoint::test_ingest_validates_required_fields PASSED [ 33%]
+../tests/test_outputs.py::TestReportingFlow::test_summary_aggregates_sources PASSED [ 44%]
+../tests/test_outputs.py::TestDependencyFixes::test_requirements_select_compatible_reporting_branch PASSED [ 55%]
+../tests/test_outputs.py::TestDependencyFixes::test_inactive_v2_branch_metadata_is_unchanged PASSED [ 66%]
+../tests/test_outputs.py::TestDependencyFixes::test_selected_v1_branch_metadata_is_still_consistent PASSED [ 77%]
+../tests/test_outputs.py::TestDependencyFixes::test_telemetry_sdk_was_not_rewritten_around_conflict PASSED [ 88%]
+../tests/test_outputs.py::TestDependencyFixes::test_installed_schema_version_is_legacy_compatible FAILED [100%]
+
+=================================== FAILURES ===================================
+____ TestDependencyFixes.test_installed_schema_version_is_legacy_compatible ____
+/tests/test_outputs.py:136: in test_installed_schema_version_is_legacy_compatible
+    assert result.returncode == 0, result.stderr
+E   AssertionError: Traceback (most recent call last):
+E       File "<string>", line 1, in <module>
+E     TypeError: normalize_event() got an unexpected keyword argument 'drop_empty'
+E     
+E   assert 1 == 0
+E    +  where 1 = CompletedProcess(args=['/usr/local/bin/python', '-c', "import schema_lib; print(schema_lib.normalize_event({'event':'x'}, drop_empty=True)['schema_version'])"], returncode=1, stdout='', stderr='Traceback (most recent call last):\n  File "<string>", line 1, in <module>\nTypeError: normalize_event() got an unexpected keyword argument \'drop_empty\'\n').returncode
+=========================== short test summary info ============================
+FAILED ../tests/test_outputs.py::TestDependencyFixes::test_installed_schema_version_is_legacy_compatible
+========================= 1 failed, 8 passed in 0.21s ==========================

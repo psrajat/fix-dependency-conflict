@@ -1,0 +1,10 @@
+{
+  "analysis": "I can see reporting_sdk_v1 has an __init__.py and formatter.py. Let me check what's exported in the __init__.py and then examine reporting_sdk_v2 to see the differences.",
+  "plan": "I'll check the __init__.py in reporting_sdk_v1 to see what functions are available, then examine reporting_sdk_v2 to understand which version should be used. I also need to check if there's a summary_sdk package since that import is commented out in the app.",
+  "commands": [
+    {
+      "keystrokes": "cat packages/reporting_sdk_v1/reporting_sdk/__init__.py\n",
+      "duration": 0.1
+    }
+  ]
+}

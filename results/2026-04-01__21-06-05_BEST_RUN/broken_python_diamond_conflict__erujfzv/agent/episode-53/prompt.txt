@@ -1,0 +1,5 @@
+New Terminal Output:
+
+root@d8be9b83f545:/app# grep summary requirements.txt
+# summary-sdk @ file:///app/packages/summary_sdk_v2
+root@d8be9b83f545:/app#

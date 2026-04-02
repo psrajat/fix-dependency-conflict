@@ -1,0 +1,5 @@
+New Terminal Output:
+
+root@36a7986e2147:/app# sed -i 's/^# reporting-sdk @ file:\/\/\/app\/packages\/reporting_sdk_v1$/reporting-sdk @ file:\/\/\/app\/packages\/reporting_sdk_v1/' re
+quirements.txt
+root@36a7986e2147:/app#

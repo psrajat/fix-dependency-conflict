@@ -1,0 +1,12 @@
+New Terminal Output:
+
+root@d8be9b83f545:/app# ls -la packages/
+total 48
+drwxr-xr-x 1 root root 4096 Apr  1 21:06 .
+drwxr-xr-x 1 root root 4096 Apr  1 21:09 ..
+drwxr-xr-x 1 root root 4096 Apr  1 21:09 reporting_sdk_v1
+drwxr-xr-x 1 root root 4096 Apr  1 21:06 reporting_sdk_v2
+drwxr-xr-x 1 root root 4096 Apr  1 21:09 schema_lib_v1
+drwxr-xr-x 1 root root 4096 Apr  1 21:06 schema_lib_v2
+drwxr-xr-x 1 root root 4096 Apr  1 21:06 telemetry_sdk
+root@d8be9b83f545:/app#

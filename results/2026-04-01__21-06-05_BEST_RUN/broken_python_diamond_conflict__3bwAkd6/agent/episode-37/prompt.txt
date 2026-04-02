@@ -1,0 +1,11 @@
+Current terminal state:
+New Terminal Output:
+
+root@4e34e58b8cb8:/app# curl -s http://localhost:8000/reports/summary && echo
+127.0.0.1 - - [01/Apr/2026 21:10:54] "GET /reports/summary HTTP/1.1" 200 -
+{"sources":{"production":1,"test":1},"total":2}
+
+root@4e34e58b8cb8:/app#
+
+
+Are you sure you want to mark the task as complete? This will trigger your solution to be graded and you won't be able to make any further corrections. If so, include "task_complete": true in your JSON response again.

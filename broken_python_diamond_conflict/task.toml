@@ -1,0 +1,39 @@
+schema_version = "1.1"
+
+[task]
+name = "psrajat/broken_python_diamond_conflict"
+version = "1.0.0"
+# description = "Fix a Python service whose summary endpoint is broken by a circular import inside a vendored SDK."
+description = "Fix a Python service broken by a resolver-selected transitive dependency conflict across two internal SDK branches."
+author = "psrajat"
+domain = "Backend SWE"
+# difficulty = "medium"
+difficulty = "hard"
+
+[metadata]
+
+[verifier]
+timeout_sec = 600.0
+
+[agent]
+timeout_sec = 600.0
+instruction = "instruction.md"
+
+[environment]
+build_timeout_sec = 600.0
+cpus = 1
+memory_mb = 2048
+storage_mb = 10240
+gpus = 0
+allow_internet = true
+mcp_servers = []
+dockerfile = "environment/Dockerfile"
+
+[environment.runtime]
+python = "3.12"
+
+[verifier.env]
+
+[environment.env]
+
+[solution.env]

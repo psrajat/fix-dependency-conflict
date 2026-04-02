@@ -1,0 +1,5 @@
+New Terminal Output:
+
+root@b9cae6d08726:/app# sed -i 's/#return jsonify(render_summary(len(stored_events), dict(by_source))), 200/return jsonify(render_summary(len(stored_events), di
+ct(by_source))), 200/' app.py
+root@b9cae6d08726:/app#

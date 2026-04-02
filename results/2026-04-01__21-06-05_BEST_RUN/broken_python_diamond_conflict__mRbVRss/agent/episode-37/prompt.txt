@@ -1,0 +1,102 @@
+New Terminal Output:
+
+root@36a7986e2147:/app# pip install --force-reinstall -r requirements.txt
+Processing ./packages/schema_lib_v1 (from -r requirements.txt (line 2))
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... done
+  Preparing metadata (pyproject.toml) ... done
+Processing ./packages/telemetry_sdk (from -r requirements.txt (line 4))
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... done
+  Preparing metadata (pyproject.toml) ... done
+Processing ./packages/reporting_sdk_v1 (from -r requirements.txt (line 5))
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... done
+  Preparing metadata (pyproject.toml) ... done
+Collecting Flask==3.0.3 (from -r requirements.txt (line 1))
+  Using cached flask-3.0.3-py3-none-any.whl.metadata (3.2 kB)
+Collecting Werkzeug>=3.0.0 (from Flask==3.0.3->-r requirements.txt (line 1))
+  Using cached werkzeug-3.1.7-py3-none-any.whl.metadata (4.0 kB)
+Collecting Jinja2>=3.1.2 (from Flask==3.0.3->-r requirements.txt (line 1))
+  Using cached jinja2-3.1.6-py3-none-any.whl.metadata (2.9 kB)
+Collecting itsdangerous>=2.1.2 (from Flask==3.0.3->-r requirements.txt (line 1))
+  Using cached itsdangerous-2.2.0-py3-none-any.whl.metadata (1.9 kB)
+Collecting click>=8.1.3 (from Flask==3.0.3->-r requirements.txt (line 1))
+  Using cached click-8.3.1-py3-none-any.whl.metadata (2.6 kB)
+Collecting blinker>=1.6.2 (from Flask==3.0.3->-r requirements.txt (line 1))
+  Using cached blinker-1.9.0-py3-none-any.whl.metadata (1.6 kB)
+Collecting MarkupSafe>=2.0 (from Jinja2>=3.1.2->Flask==3.0.3->-r requirements.txt (line 1))
+  Downloading markupsafe-3.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.7 kB)
+Downloading flask-3.0.3-py3-none-any.whl (101 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 101.7/101.7 kB 4.7 MB/s eta 0:00:00
+Downloading blinker-1.9.0-py3-none-any.whl (8.5 kB)
+Downloading click-8.3.1-py3-none-any.whl (108 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 108.3/108.3 kB 8.2 MB/s eta 0:00:00
+Downloading itsdangerous-2.2.0-py3-none-any.whl (16 kB)
+Downloading jinja2-3.1.6-py3-none-any.whl (134 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 134.9/134.9 kB 11.5 MB/s eta 0:00:00
+Downloading werkzeug-3.1.7-py3-none-any.whl (226 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 226.3/226.3 kB 11.1 MB/s eta 0:00:00
+Downloading markupsafe-3.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (22 kB)
+Building wheels for collected packages: schema-lib, telemetry-sdk, reporting-sdk
+  Building wheel for schema-lib (pyproject.toml) ... done
+  Created wheel for schema-lib: filename=schema_lib-1.8.2-py3-none-any.whl size=1309 sha256=777118e3feb5300c812b55cbf060364f7bd154b24f5c1296eb237f48763090de
+  Stored in directory: /tmp/pip-ephem-wheel-cache-d_afdbvx/wheels/62/40/02/73992a94529542f8f43f56b38ed1f229fe652a09cd7c65e530
+  Building wheel for telemetry-sdk (pyproject.toml) ... done
+  Created wheel for telemetry-sdk: filename=telemetry_sdk-1.4.0-py3-none-any.whl size=1571 sha256=c65983de60299bc764e1bd4dcf2cff4b557df7870c1b0efb5f076088c3f31f
+71
+  Stored in directory: /tmp/pip-ephem-wheel-cache-d_afdbvx/wheels/6c/73/6c/2fe2bbfa198657f8bf40820605b000c1d06a686f002c8a92de
+  Building wheel for reporting-sdk (pyproject.toml) ... done
+  Created wheel for reporting-sdk: filename=reporting_sdk-1.9.0-py3-none-any.whl size=1623 sha256=087479d295428da4ef9e52fc632b3d4163ff6513705cca779f4b414763ae9a
+b0
+  Stored in directory: /tmp/pip-ephem-wheel-cache-d_afdbvx/wheels/22/95/cd/6fff072a053687531459af0c33691e789d1c1abe57113fcd7f
+Successfully built schema-lib telemetry-sdk reporting-sdk
+Installing collected packages: schema-lib, telemetry-sdk, reporting-sdk, MarkupSafe, itsdangerous, click, blinker, Werkzeug, Jinja2, Flask
+  Attempting uninstall: schema-lib
+    Found existing installation: schema-lib 2.1.0
+    Uninstalling schema-lib-2.1.0:
+      Successfully uninstalled schema-lib-2.1.0
+  Attempting uninstall: telemetry-sdk
+    Found existing installation: telemetry-sdk 1.4.0
+    Uninstalling telemetry-sdk-1.4.0:
+      Successfully uninstalled telemetry-sdk-1.4.0
+  Attempting uninstall: reporting-sdk
+    Found existing installation: reporting-sdk 2.2.0
+    Uninstalling reporting-sdk-2.2.0:
+      Successfully uninstalled reporting-sdk-2.2.0
+  Attempting uninstall: MarkupSafe
+    Found existing installation: MarkupSafe 3.0.3
+    Uninstalling MarkupSafe-3.0.3:
+      Successfully uninstalled MarkupSafe-3.0.3
+  Attempting uninstall: itsdangerous
+    Found existing installation: itsdangerous 2.2.0
+    Uninstalling itsdangerous-2.2.0:
+      Successfully uninstalled itsdangerous-2.2.0
+  Attempting uninstall: click
+    Found existing installation: click 8.3.1
+    Uninstalling click-8.3.1:
+      Successfully uninstalled click-8.3.1
+  Attempting uninstall: blinker
+    Found existing installation: blinker 1.9.0
+    Uninstalling blinker-1.9.0:
+      Successfully uninstalled blinker-1.9.0
+  Attempting uninstall: Werkzeug
+    Found existing installation: Werkzeug 3.1.7
+    Uninstalling Werkzeug-3.1.7:
+      Successfully uninstalled Werkzeug-3.1.7
+  Attempting uninstall: Jinja2
+    Found existing installation: Jinja2 3.1.6
+    Uninstalling Jinja2-3.1.6:
+      Successfully uninstalled Jinja2-3.1.6
+  Attempting uninstall: Flask
+    Found existing installation: Flask 3.0.3
+    Uninstalling Flask-3.0.3:
+      Successfully uninstalled Flask-3.0.3
+Successfully installed Flask-3.0.3 Jinja2-3.1.6 MarkupSafe-3.0.3 Werkzeug-3.1.7 blinker-1.9.0 click-8.3.1 itsdangerous-2.2.0 reporting-sdk-1.9.0 schema-lib-1.8.
+2 telemetry-sdk-1.4.0
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a v
+irtual environment instead: https://pip.pypa.io/warnings/venv
+
+[notice] A new release of pip is available: 24.0 -> 26.0.1
+[notice] To update, run: pip install --upgrade pip
+root@36a7986e2147:/app#

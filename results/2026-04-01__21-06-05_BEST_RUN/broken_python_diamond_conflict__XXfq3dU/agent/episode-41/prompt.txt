@@ -1,0 +1,18 @@
+Current terminal state:
+New Terminal Output:
+
+root@be855c1f7611:/app# cat packages/telemetry_sdk/telemetry_sdk/encoder.py
+from schema_lib import normalize_event
+
+
+def encode_event(payload: dict) -> dict:
+    normalized = normalize_event(payload)
+    return {
+        "channel": normalized.get("source", "unknown"),
+        "event": normalized["event"],
+        "schema_version": normalized["schema_version"],
+    }
+root@be855c1f7611:/app#
+
+
+Are you sure you want to mark the task as complete? This will trigger your solution to be graded and you won't be able to make any further corrections. If so, include "task_complete": true in your JSON response again.

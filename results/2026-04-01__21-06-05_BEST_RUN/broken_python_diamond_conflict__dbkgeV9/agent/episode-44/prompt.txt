@@ -1,0 +1,14 @@
+New Terminal Output:
+
+root@23ba65ef545c:/app# pip show telemetry_sdk
+Name: telemetry-sdk
+Version: 1.4.0
+Summary:
+Home-page:
+Author:
+Author-email:
+License:
+Location: /usr/local/lib/python3.12/site-packages
+Requires: schema-lib
+Required-by:
+root@23ba65ef545c:/app#

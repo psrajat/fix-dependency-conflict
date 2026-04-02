@@ -1,0 +1,47 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-8.3.5, pluggy-1.6.0 -- /usr/local/bin/python
+cachedir: .pytest_cache
+rootdir: /tests
+collecting ... collected 9 items
+
+../tests/test_outputs.py::TestHealthEndpoint::test_health_status PASSED  [ 11%]
+../tests/test_outputs.py::TestIngestEndpoint::test_ingest_accepts_valid_event FAILED [ 22%]
+../tests/test_outputs.py::TestIngestEndpoint::test_ingest_validates_required_fields PASSED [ 33%]
+../tests/test_outputs.py::TestReportingFlow::test_summary_aggregates_sources PASSED [ 44%]
+../tests/test_outputs.py::TestDependencyFixes::test_requirements_select_compatible_reporting_branch FAILED [ 55%]
+../tests/test_outputs.py::TestDependencyFixes::test_inactive_v2_branch_metadata_is_unchanged PASSED [ 66%]
+../tests/test_outputs.py::TestDependencyFixes::test_selected_v1_branch_metadata_is_still_consistent PASSED [ 77%]
+../tests/test_outputs.py::TestDependencyFixes::test_telemetry_sdk_was_not_rewritten_around_conflict FAILED [ 88%]
+../tests/test_outputs.py::TestDependencyFixes::test_installed_schema_version_is_legacy_compatible FAILED [100%]
+
+=================================== FAILURES ===================================
+______________ TestIngestEndpoint.test_ingest_accepts_valid_event ______________
+/tests/test_outputs.py:59: in test_ingest_accepts_valid_event
+    assert body["telemetry"]["schema_version"] == "1.8.2"
+E   AssertionError: assert '2.1.0' == '1.8.2'
+E     
+E     - 1.8.2
+E     + 2.1.0
+___ TestDependencyFixes.test_requirements_select_compatible_reporting_branch ___
+/tests/test_outputs.py:87: in test_requirements_select_compatible_reporting_branch
+    assert "schema_lib_v1" in active_requirements
+E   AssertionError: assert 'schema_lib_v1' in 'Flask==3.0.3\nschema-lib @ file:///app/packages/schema_lib_v2\ntelemetry-sdk @ file:///app/packages/telemetry_sdk\nreporting-sdk @ file:///app/packages/reporting_sdk_v2'
+___ TestDependencyFixes.test_telemetry_sdk_was_not_rewritten_around_conflict ___
+/tests/test_outputs.py:122: in test_telemetry_sdk_was_not_rewritten_around_conflict
+    assert "drop_empty=True" in source
+E   assert 'drop_empty=True' in 'from schema_lib import normalize_event\n\n\ndef encode_event(payload: dict) -> dict:\n    # schema_lib_v2 uses required_fields parameter instead of drop_empty\n    # We\'ll pass empty tuple since we don\'t need specific field validation\n    normalized = normalize_event(payload, required_fields=())\n    return {\n        "channel": normalized.get("source", "unknown"),\n        "event": normalized["event"],\n        "schema_version": normalized["schema_version"],\n    }\n'
+____ TestDependencyFixes.test_installed_schema_version_is_legacy_compatible ____
+/tests/test_outputs.py:136: in test_installed_schema_version_is_legacy_compatible
+    assert result.returncode == 0, result.stderr
+E   AssertionError: Traceback (most recent call last):
+E       File "<string>", line 1, in <module>
+E     TypeError: normalize_event() got an unexpected keyword argument 'drop_empty'
+E     
+E   assert 1 == 0
+E    +  where 1 = CompletedProcess(args=['/usr/local/bin/python', '-c', "import schema_lib; print(schema_lib.normalize_event({'event':'x'}, drop_empty=True)['schema_version'])"], returncode=1, stdout='', stderr='Traceback (most recent call last):\n  File "<string>", line 1, in <module>\nTypeError: normalize_event() got an unexpected keyword argument \'drop_empty\'\n').returncode
+=========================== short test summary info ============================
+FAILED ../tests/test_outputs.py::TestIngestEndpoint::test_ingest_accepts_valid_event
+FAILED ../tests/test_outputs.py::TestDependencyFixes::test_requirements_select_compatible_reporting_branch
+FAILED ../tests/test_outputs.py::TestDependencyFixes::test_telemetry_sdk_was_not_rewritten_around_conflict
+FAILED ../tests/test_outputs.py::TestDependencyFixes::test_installed_schema_version_is_legacy_compatible
+========================= 4 failed, 5 passed in 0.22s ==========================

@@ -1,0 +1,10 @@
+{
+  "analysis": "I can see reporting_sdk_v2 has a similar structure with __init__.py and formatter.py. Let me check the __init__.py to see what's exported, then look for a summary_sdk package and examine the requirements.txt.",
+  "plan": "I'll check the __init__.py in reporting_sdk_v2 to see what functions it exports, then look for any summary_sdk package and examine the requirements.txt to understand the dependency structure and see if there are clues about which versions should be used.",
+  "commands": [
+    {
+      "keystrokes": "cat packages/reporting_sdk_v2/reporting_sdk/__init__.py\n",
+      "duration": 0.1
+    }
+  ]
+}

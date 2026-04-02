@@ -1,0 +1,4 @@
+Flask==3.0.3
+schema-lib @ file:///app/packages/schema_lib_v2
+telemetry-sdk @ file:///app/packages/telemetry_sdk
+reporting-sdk @ file:///app/packages/reporting_sdk_v2

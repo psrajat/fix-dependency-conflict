@@ -1,0 +1,10 @@
+{
+  "analysis": "The reporting_sdk_v1 has an __init__.py and formatter.py file. Let me examine these to understand how build_report_record works and see if there are any clues about summary functionality.",
+  "plan": "I'll check the __init__.py and formatter.py files in reporting_sdk_v1 to understand the build_report_record implementation, then also check reporting_sdk_v2 to see if there are differences or if summary functionality exists there.",
+  "commands": [
+    {
+      "keystrokes": "cat packages/reporting_sdk_v1/reporting_sdk/__init__.py\n",
+      "duration": 0.1
+    }
+  ]
+}

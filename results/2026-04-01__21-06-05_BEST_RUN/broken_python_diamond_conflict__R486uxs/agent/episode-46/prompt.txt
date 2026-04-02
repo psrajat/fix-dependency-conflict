@@ -1,0 +1,6 @@
+New Terminal Output:
+
+root@371a193e1ac4:/app# ls -la /usr/local/lib/python3.12/site-packages/ | grep reporting
+drwxr-xr-x 3 root root   4096 Apr  1 21:06 reporting_sdk
+drwxr-xr-x 2 root root   4096 Apr  1 21:06 reporting_sdk-2.2.0.dist-info
+root@371a193e1ac4:/app#

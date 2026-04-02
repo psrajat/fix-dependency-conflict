@@ -1,0 +1,419 @@
+[?2004hroot@371a193e1ac4:/app# asciinema rec --stdin /logs/agent/recording.cast
+[?2004l[0;32masciinema: recording asciicast to /logs/agent/recording.cast[0m
+[0;32masciinema: press <ctrl-d> or type "exit" when you're done[0m
+[?2004hroot@371a193e1ac4:/app# clear
+[?2004l[H[J[3J[?2004hroot@371a193e1ac4:/app# ls -la
+[?2004ltotal 28
+drwxr-xr-x 1 root root 4096 Apr  1 20:58 .
+drwxr-xr-x 1 root root 4096 Apr  1 21:06 ..
+-rw-r--r-- 1 root root  481 Apr  1 16:06 Dockerfile
+-rw-r--r-- 1 root root 1388 Apr  1 20:57 app.py
+-rw-r--r-- 1 root root   30 Apr  1 11:55 entrypoint.sh
+drwxr-xr-x 1 root root 4096 Apr  1 21:06 packages
+-rw-r--r-- 1 root root  324 Apr  1 20:57 requirements.txt
+[?2004hroot@371a193e1ac4:/app# cat app.py
+[?2004lfrom collections import Counter
+
+from flask import Flask, jsonify, request
+
+from reporting_sdk import build_report_record
+from telemetry_sdk import encode_event
+
+app = Flask(__name__)
+stored_events = []
+
+
+@app.get("/health")
+def health():
+    return jsonify({"status": "ok"}), 200
+
+
+@app.post("/ingest")
+def ingest():
+    payload = request.get_json(silent=True) or {}
+    if not payload.get("source") or not payload.get("event"):
+        return jsonify({"error": "source and event are required"}), 400
+
+    telemetry = encode_event(payload)
+    report_record = build_report_record(payload)
+
+    stored_events.append(
+        {
+            "source": report_record["group"],
+            "event": telemetry["event"],
+            "user_id": report_record.get("user_id"),
+        }
+    )
+
+    return (
+        jsonify(
+            {
+                "accepted": True,
+                "telemetry": telemetry,
+                "report": report_record,
+            }
+        ),
+        202,
+    )
+
+
+@app.get("/reports/summary")
+def summary():
+    #from summary_sdk import render_summary
+
+    by_source = Counter(event["source"] for event in stored_events)
+    #return jsonify(render_summary(len(stored_events), dict(by_source))), 200
+    return jsonify({"total": len(stored_events), "sources": dict(by_source)}), 200
+
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8000, debug=False)
+[?2004hroot@371a193e1ac4:/app# ls -la packages/
+[?2004ltotal 28
+drwxr-xr-x 1 root root 4096 Apr  1 21:06 .
+drwxr-xr-x 1 root root 4096 Apr  1 20:58 ..
+drwxr-xr-x 3 root root 4096 Apr  1 11:47 reporting_sdk_v1
+drwxr-xr-x 1 root root 4096 Apr  1 21:06 reporting_sdk_v2
+drwxr-xr-x 3 root root 4096 Apr  1 11:47 schema_lib_v1
+drwxr-xr-x 1 root root 4096 Apr  1 21:06 schema_lib_v2
+drwxr-xr-x 1 root root 4096 Apr  1 21:06 telemetry_sdk
+[?2004hroot@371a193e1ac4:/app# ls -la packages/reporting_sdk_v2/
+[?2004ltotal 24
+drwxr-xr-x 1 root root 4096 Apr  1 21:06 .
+drwxr-xr-x 1 root root 4096 Apr  1 21:06 ..
+drwxr-xr-x 4 root root 4096 Apr  1 21:06 build
+-rw-r--r-- 1 root root  213 Apr  1 11:55 pyproject.toml
+drwxr-xr-x 2 root root 4096 Apr  1 11:47 reporting_sdk
+drwxr-xr-x 2 root root 4096 Apr  1 21:06 reporting_sdk.egg-info
+[?2004hroot@371a193e1ac4:/app# ls -la packages/telemetry_sdk/
+[?2004ltotal 24
+drwxr-xr-x 1 root root 4096 Apr  1 21:06 .
+drwxr-xr-x 1 root root 4096 Apr  1 21:06 ..
+drwxr-xr-x 4 root root 4096 Apr  1 21:06 build
+-rw-r--r-- 1 root root  184 Apr  1 11:55 pyproject.toml
+drwxr-xr-x 2 root root 4096 Apr  1 11:47 telemetry_sdk
+drwxr-xr-x 2 root root 4096 Apr  1 21:06 telemetry_sdk.egg-info
+[?2004hroot@371a193e1ac4:/app# ls -la packages/telemetry_sdk/telemetry_sdk/
+[?2004ltotal 16
+drwxr-xr-x 2 root root 4096 Apr  1 11:47 .
+drwxr-xr-x 1 root root 4096 Apr  1 21:06 ..
+-rw-r--r-- 1 root root   34 Apr  1 12:23 __init__.py
+-rw-r--r-- 1 root root  310 Apr  1 11:55 encoder.py
+[?2004hroot@371a193e1ac4:/app# cat packages/telemetry_sdk/telemetry_sdk/__init__.py
+[?2004lfrom .encoder import encode_event
+[?2004hroot@371a193e1ac4:/app# ls -la packages/reporting_sdk_v2/reporting_sdk/
+[?2004ltotal 16
+drwxr-xr-x 2 root root 4096 Apr  1 11:47 .
+drwxr-xr-x 1 root root 4096 Apr  1 21:06 ..
+-rw-r--r-- 1 root root   43 Apr  1 12:23 __init__.py
+-rw-r--r-- 1 root root  328 Apr  1 11:55 formatter.py
+[?2004hroot@371a193e1ac4:/app# cat packages/reporting_sdk_v2/reporting_sdk/__init__.py
+[?2004lfrom .formatter import build_report_record
+[?2004hroot@371a193e1ac4:/app# find packages/ -name '*summary*' -type d
+[?2004l[?2004hroot@371a193e1ac4:/app# find packages/ -name '*summary*' -type f
+[?2004l[?2004hroot@371a193e1ac4:/app# ls -la packages/schema_lib_v2/
+[?2004ltotal 24
+drwxr-xr-x 1 root root 4096 Apr  1 21:06 .
+drwxr-xr-x 1 root root 4096 Apr  1 21:06 ..
+drwxr-xr-x 4 root root 4096 Apr  1 21:06 build
+-rw-r--r-- 1 root root  138 Apr  1 11:55 pyproject.toml
+drwxr-xr-x 2 root root 4096 Apr  1 11:47 schema_lib
+drwxr-xr-x 2 root root 4096 Apr  1 21:06 schema_lib.egg-info
+[?2004hroot@371a193e1ac4:/app# ls -la packages/schema_lib_v2/schema_lib/
+[?2004ltotal 12
+drwxr-xr-x 2 root root 4096 Apr  1 11:47 .
+drwxr-xr-x 1 root root 4096 Apr  1 21:06 ..
+-rw-r--r-- 1 root root  340 Apr  1 11:55 __init__.py
+[?2004hroot@371a193e1ac4:/app# cat packages/schema_lib_v2/schema_lib/__init__.py
+[?2004ldef normalize_event(payload: dict, *, required_fields=()) -> dict:
+    missing = [field for field in required_fields if not payload.get(field)]
+    if missing:
+        raise ValueError(f"missing required fields: {', '.join(sorted(missing))}")
+
+    normalized = dict(payload)
+    normalized["schema_version"] = "2.1.0"
+    return normalized
+[?2004hroot@371a193e1ac4:/app# ls -la packages/schema_lib_v1/schema_lib/
+[?2004ltotal 12
+drwxr-xr-x 2 root root 4096 Apr  1 11:47 .
+drwxr-xr-x 3 root root 4096 Apr  1 11:47 ..
+-rw-r--r-- 1 root root  297 Apr  1 11:55 __init__.py
+[?2004hroot@371a193e1ac4:/app# cat packages/schema_lib_v1/schema_lib/__init__.py
+[?2004ldef normalize_event(payload: dict, *, drop_empty: bool = False) -> dict:
+    normalized = {}
+    for key, value in payload.items():
+        if drop_empty and value in (None, ""):
+            continue
+        normalized[key] = value
+    normalized["schema_version"] = "1.8.2"
+    return normalized
+[?2004hroot@371a193e1ac4:/app# python app.py
+[?2004l * Serving Flask app 'app'
+ * Debug mode: off
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://172.25.0.2:8000
+[33mPress CTRL+C to quit[0m
+^C[?2004hroot@371a193e1ac4:/app# python app.py &
+[?2004l[1] 433
+[?2004hroot@371a193e1ac4:/app#  * Serving Flask app 'app'
+ * Debug mode: off
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://172.25.0.2:8000
+[33mPress CTRL+C to quit[0m
+curl -s http://localhost:8000/health
+[?2004l127.0.0.1 - - [01/Apr/2026 21:08:12] "GET /health HTTP/1.1" 200 -
+{"status":"ok"}
+[?2004hroot@371a193e1ac4:/app# curl -s -X POST http://localhost:8000/ingest -H 'Content-Type: application/json' -d '{"source": "test", "event": "user_login"}'
+[?2004l[2026-04-01 21:08:18,942] ERROR in app: Exception on /ingest [POST]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app.py", line 23, in ingest
+    telemetry = encode_event(payload)
+                ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/telemetry_sdk/encoder.py", line 5, in encode_event
+    normalized = normalize_event(payload, drop_empty=True)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: normalize_event() got an unexpected keyword argument 'drop_empty'
+127.0.0.1 - - [01/Apr/2026 21:08:18] "[35m[1mPOST /ingest HTTP/1.1[0m" 500 -
+<!doctype html>
+<html lang=en>
+<title>500 Internal Server Error</title>
+<h1>Internal Server Error</h1>
+<p>The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application.</p>
+[?2004hroot@371a193e1ac4:/app# cat packages/telemetry_sdk/telemetry_sdk/encoder.py
+[?2004lfrom schema_lib import normalize_event
+
+
+def encode_event(payload: dict) -> dict:
+    normalized = normalize_event(payload, drop_empty=True)
+    return {
+        "channel": normalized.get("source", "unknown"),
+        "event": normalized["event"],
+        "schema_version": normalized["schema_version"],
+    }
+[?2004hroot@371a193e1ac4:/app# python -c "import sys; print('\\n'.join(sys.path))"
+[?2004l
+/usr/local/lib/python312.zip
+/usr/local/lib/python3.12
+/usr/local/lib/python3.12/lib-dynload
+/usr/local/lib/python3.12/site-packages
+[?2004hroot@371a193e1ac4:/app# cat packages/telemetry_sdk/pyproject.toml
+[?2004l[build-system]
+requires = ["setuptools==75.8.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "telemetry-sdk"
+version = "1.4.0"
+dependencies = [
+  "schema-lib>=1.8,<3",
+]
+[?2004hroot@371a193e1ac4:/app# pip list | grep schema
+[?2004lschema-lib         2.1.0
+
+[1m[[0m[34;49mnotice[0m[1;39;49m][0m[39;49m A new release of pip is available: [0m[31;49m24.0[0m[39;49m -> [0m[32;49m26.0.1[0m
+[1m[[0m[34;49mnotice[0m[1;39;49m][0m[39;49m To update, run: [0m[32;49mpip install --upgrade pip[0m
+[?2004hroot@371a193e1ac4:/app# ls -la packages/__init__.py
+[?2004lls: cannot access 'packages/__init__.py': No such file or directory
+[?2004hroot@371a193e1ac4:/app# cat packages/schema_lib_v1/schema_lib/__init__.py
+[?2004ldef normalize_event(payload: dict, *, drop_empty: bool = False) -> dict:
+    normalized = {}
+    for key, value in payload.items():
+        if drop_empty and value in (None, ""):
+            continue
+        normalized[key] = value
+    normalized["schema_version"] = "1.8.2"
+    return normalized
+[?2004hroot@371a193e1ac4:/app# cp packages/telemetry_sdk/telemetry_sdk/encoder.py packages/telemetry_sdk/telemetry_sdk/encoder.py.bak
+[?2004l[?2004hroot@371a193e1ac4:/app# sed -i 's/from schema_lib import normalize_event/from packages.schema_lib_v1.schema_lib import normalize_event/' packages/telemetry_sdk/telemetry_sdk/encoder.py
+[?2004l[?2004hroot@371a193e1ac4:/app# cat packages/telemetry_sdk/telemetry_sdk/encoder.py
+[?2004lfrom packages.schema_lib_v1.schema_lib import normalize_event
+
+
+def encode_event(payload: dict) -> dict:
+    normalized = normalize_event(payload, drop_empty=True)
+    return {
+        "channel": normalized.get("source", "unknown"),
+        "event": normalized["event"],
+        "schema_version": normalized["schema_version"],
+    }
+[?2004hroot@371a193e1ac4:/app# curl -s -X POST http://localhost:8000/ingest -H 'Content-Type: application/json' -d '{"source": "test", "event": "user_login"}'
+[?2004l[2026-04-01 21:09:17,209] ERROR in app: Exception on /ingest [POST]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app.py", line 23, in ingest
+    telemetry = encode_event(payload)
+                ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/telemetry_sdk/encoder.py", line 5, in encode_event
+    normalized = normalize_event(payload, drop_empty=True)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: normalize_event() got an unexpected keyword argument 'drop_empty'
+127.0.0.1 - - [01/Apr/2026 21:09:17] "[35m[1mPOST /ingest HTTP/1.1[0m" 500 -
+<!doctype html>
+<html lang=en>
+<title>500 Internal Server Error</title>
+<h1>Internal Server Error</h1>
+<p>The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application.</p>
+[?2004hroot@371a193e1ac4:/app# ls -la /usr/local/lib/python3.12/site-packages/telemetry_sdk/
+[?2004ltotal 24
+drwxr-xr-x 3 root root 4096 Apr  1 21:06 .
+drwxr-xr-x 1 root root 4096 Apr  1 21:06 ..
+-rw-r--r-- 1 root root   34 Apr  1 21:06 __init__.py
+drwxr-xr-x 2 root root 4096 Apr  1 21:06 __pycache__
+-rw-r--r-- 1 root root  310 Apr  1 21:06 encoder.py
+[?2004hroot@371a193e1ac4:/app# cat /usr/local/lib/python3.12/site-packages/telemetry_sdk/encoder.py
+[?2004lfrom schema_lib import normalize_event
+
+
+def encode_event(payload: dict) -> dict:
+    normalized = normalize_event(payload, drop_empty=True)
+    return {
+        "channel": normalized.get("source", "unknown"),
+        "event": normalized["event"],
+        "schema_version": normalized["schema_version"],
+    }
+[?2004hroot@371a193e1ac4:/app# cp /usr/local/lib/python3.12/site-packages/telemetry_sdk/encoder.py /usr/local/lib/python3.12/site-packages/telemetry_sdk/encoder.py.bak M[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Kk
+[?2004l[?2004hroot@371a193e1ac4:/app# sed -i 's/from schema_lib import normalize_event/from packages.schema_lib_v1.schema_lib import normalize_event/' /usr/local/lib/python3.12/site-packages/telemetry_sdk/encoder.py
+[?2004l[?2004hroot@371a193e1ac4:/app# cat /usr/local/lib/python3.12/site-packages/telemetry_sdk/encoder.py
+[?2004lfrom packages.schema_lib_v1.schema_lib import normalize_event
+
+
+def encode_event(payload: dict) -> dict:
+    normalized = normalize_event(payload, drop_empty=True)
+    return {
+        "channel": normalized.get("source", "unknown"),
+        "event": normalized["event"],
+        "schema_version": normalized["schema_version"],
+    }
+[?2004hroot@371a193e1ac4:/app# curl -s -X POST http://localhost:8000/ingest -H 'Content-Type: application/json' -d '{"source": "test", "event": "user_login"}'
+[?2004l[2026-04-01 21:09:48,409] ERROR in app: Exception on /ingest [POST]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app.py", line 23, in ingest
+    telemetry = encode_event(payload)
+                ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/telemetry_sdk/encoder.py", line 5, in encode_event
+    normalized = normalize_event(payload, drop_empty=True)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: normalize_event() got an unexpected keyword argument 'drop_empty'
+127.0.0.1 - - [01/Apr/2026 21:09:48] "[35m[1mPOST /ingest HTTP/1.1[0m" 500 -
+<!doctype html>
+<html lang=en>
+<title>500 Internal Server Error</title>
+<h1>Internal Server Error</h1>
+<p>The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application.</p>
+[?2004hroot@371a193e1ac4:/app# PYTHONPATH=/app/packages python app.py &
+[?2004l[2] 804
+[?2004hroot@371a193e1ac4:/app#  * Serving Flask app 'app'
+ * Debug mode: off
+Address already in use
+Port 8000 is in use by another program. Either identify and stop that program, or start the server with a different port.
+kill %1
+[?2004l[2]+  Exit 1                  PYTHONPATH=/app/packages python app.py
+[?2004hroot@371a193e1ac4:/app# PYTHONPATH=/app/packages python app.py &
+[?2004l[2] 841
+[1]   Terminated              python app.py
+[?2004hroot@371a193e1ac4:/app#  * Serving Flask app 'app'
+ * Debug mode: off
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://172.25.0.2:8000
+[33mPress CTRL+C to quit[0m
+curl -s -X POST http://localhost:8000/ingest -H 'Content-Type: application/json' -d '{"source": "test", "event": "user_login"}'
+[?2004l127.0.0.1 - - [01/Apr/2026 21:10:10] "[35m[1mPOST /ingest HTTP/1.1[0m" 202 -
+{"accepted":true,"report":{"group":"test","schema_version":"2.1.0","user_id":null},"telemetry":{"channel":"test","event":"user_login","schema_version":"1.8.2"}}
+[?2004hroot@371a193e1ac4:/app# curl -s http://localhost:8000/reports/summary
+[?2004l127.0.0.1 - - [01/Apr/2026 21:10:16] "GET /reports/summary HTTP/1.1" 200 -
+{"sources":{"test":1},"total":1}
+[?2004hroot@371a193e1ac4:/app# curl -s -X POST http://localhost:8000/ingest -H 'Content-Type: application/json' -d '{"source": "web", "event": "page_view"}'
+[?2004l127.0.0.1 - - [01/Apr/2026 21:10:23] "[35m[1mPOST /ingest HTTP/1.1[0m" 202 -
+{"accepted":true,"report":{"group":"web","schema_version":"2.1.0","user_id":null},"telemetry":{"channel":"web","event":"page_view","schema_version":"1.8.2"}}
+[?2004hroot@371a193e1ac4:/app# curl -s http://localhost:8000/reports/summary
+[?2004l127.0.0.1 - - [01/Apr/2026 21:10:28] "GET /reports/summary HTTP/1.1" 200 -
+{"sources":{"test":1,"web":1},"total":2}
+[?2004hroot@371a193e1ac4:/app# grep -n "reporting_sdk" app.py
+[?2004l5:from reporting_sdk import build_report_record
+[?2004hroot@371a193e1ac4:/app# ls -la /usr/local/lib/python3.12/site-packages/ | grep reporting
+[?2004ldrwxr-xr-x 3 root root   4096 Apr  1 21:06 reporting_sdk
+drwxr-xr-x 2 root root   4096 Apr  1 21:06 reporting_sdk-2.2.0.dist-info
+[?2004hroot@371a193e1ac4:/app# ls -la /usr/local/lib/python3.12/site-packages/reporting_sdk/
+[?2004ltotal 24
+drwxr-xr-x 3 root root 4096 Apr  1 21:06 .
+drwxr-xr-x 1 root root 4096 Apr  1 21:06 ..
+-rw-r--r-- 1 root root   43 Apr  1 21:06 __init__.py
+drwxr-xr-x 2 root root 4096 Apr  1 21:06 __pycache__
+-rw-r--r-- 1 root root  328 Apr  1 21:06 formatter.py
+[?2004hroot@371a193e1ac4:/app# cat /usr/local/lib/python3.12/site-packages/reporting_sdk/__init__.py
+[?2004lfrom .formatter import build_report_record
+[?2004hroot@371a193e1ac4:/app# cat /usr/local/lib/python3.12/site-packages/reporting_sdk/formatter.py
+[?2004lfrom schema_lib import normalize_event
+
+
+def build_report_record(payload: dict) -> dict:
+    normalized = normalize_event(payload, required_fields=("source", "event"))
+    return {
+        "group": normalized["source"],
+        "user_id": normalized.get("user_id"),
+        "schema_version": normalized["schema_version"],
+    }
+[?2004hroot@371a193e1ac4:/app# curl -s -X POST http://localhost:8000/ingest -H 'Content-Type: application/json' -d '{"source": "test2", "event": "logout", "user_id": "123"}'
+[?2004l127.0.0.1 - - [01/Apr/2026 21:11:02] "[35m[1mPOST /ingest HTTP/1.1[0m" 202 -
+{"accepted":true,"report":{"group":"test2","schema_version":"2.1.0","user_id":"123"},"telemetry":{"channel":"test2","event":"logout","schema_version":"1.8.2"}}
+[?2004hroot@371a193e1ac4:/app# curl -s http://localhost:8000/reports/summary
+[?2004l127.0.0.1 - - [01/Apr/2026 21:11:08] "GET /reports/summary HTTP/1.1" 200 -
+{"sources":{"test":1,"test2":1,"web":1},"total":3}
+[?2004hroot@371a193e1ac4:/app# curl -s http://localhost:8000/health | python -m json.tool
+[?2004l127.0.0.1 - - [01/Apr/2026 21:11:14] "GET /health HTTP/1.1" 200 -
+{
+    "status": "ok"
+}
+[?2004hroot@371a193e1ac4:/app# echo "Fix Summary:"
+[?2004lFix Summary:
+[?2004hroot@371a193e1ac4:/app# echo "1. Identified that telemetry_sdk was failing due to version mismatch"
+[?2004l1. Identified that telemetry_sdk was failing due to version mismatch
+[?2004hroot@371a193e1ac4:/app# echo "2. Updated telemetry_sdk encoder.py to use schema_lib_v1 (supports drop_empty parameter)"
+[?2004l2. Updated telemetry_sdk encoder.py to use schema_lib_v1 (supports drop_empty parameter)
+[?2004hroot@371a193e1ac4:/app# echo "3. Reporting_sdk continues to work with schema_lib_v2 (supports required_fields parameter)"
+[?2004l3. Reporting_sdk continues to work with schema_lib_v2 (supports required_fields parameter)
+[?2004hroot@371a193e1ac4:/app# echo "4. All endpoints now working: /health, /ingest, /reports/summary"
+[?2004l4. All endpoints now working: /health, /ingest, /reports/summary
+[?2004hroot@371a193e1ac4:/app# kill %2
+[?2004l[?2004hroot@371a193e1ac4:/app# 

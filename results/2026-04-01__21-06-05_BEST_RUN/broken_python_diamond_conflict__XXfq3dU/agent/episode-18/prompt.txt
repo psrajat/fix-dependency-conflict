@@ -1,0 +1,5 @@
+New Terminal Output:
+
+root@be855c1f7611:/app# python app.py > app.log 2>&1 &
+[1] 419
+root@be855c1f7611:/app#

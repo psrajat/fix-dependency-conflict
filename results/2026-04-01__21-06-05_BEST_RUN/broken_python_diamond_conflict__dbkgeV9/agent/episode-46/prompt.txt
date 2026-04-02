@@ -1,0 +1,5 @@
+New Terminal Output:
+
+root@23ba65ef545c:/app# cp /usr/local/lib/python3.12/site-packages/telemetry_sdk/encoder.py /usr/local/lib/python3.12/site-packages/telemetry_sdk/encoder.py.bac
+kup
+root@23ba65ef545c:/app#

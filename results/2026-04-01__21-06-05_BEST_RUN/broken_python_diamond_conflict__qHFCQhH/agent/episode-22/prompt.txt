@@ -1,0 +1,15 @@
+New Terminal Output:
+
+root@b9cae6d08726:/app# cat > packages/summary_sdk_v2/pyproject.toml << 'EOF'
+> [build-system]
+> requires = ["setuptools>=61", "wheel"]
+> build-backend = "setuptools.build_meta"
+>
+> [project]
+> name = "summary-sdk"
+> version = "2.0.0"
+> description = "Summary rendering SDK"
+> requires-python = ">=3.8"
+> dependencies = []
+> EOF
+root@b9cae6d08726:/app#

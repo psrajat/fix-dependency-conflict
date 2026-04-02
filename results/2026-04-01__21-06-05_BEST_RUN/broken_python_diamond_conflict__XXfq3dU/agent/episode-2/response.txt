@@ -1,0 +1,10 @@
+{
+  "analysis": "I can see the application code. It imports from two SDKs: `reporting_sdk` and `telemetry_sdk`, and there's a commented out import for `summary_sdk`. The app has three endpoints: /health, /ingest, and /reports/summary. The /reports/summary endpoint has some commented code that suggests it should use a summary_sdk but is currently using a manual implementation. Let me check the requirements.txt and the packages directory to see what SDKs are available.",
+  "plan": "I'll examine the requirements.txt to see the dependencies, then explore the packages directory to see what vendored SDKs are available. This will help me understand what's supposed to be working and what might be broken.",
+  "commands": [
+    {
+      "keystrokes": "cat requirements.txt\n",
+      "duration": 0.1
+    }
+  ]
+}

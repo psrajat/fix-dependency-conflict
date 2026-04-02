@@ -1,0 +1,8 @@
+New Terminal Output:
+
+root@36a7986e2147:/app# ls -la packages/schema_lib_v2/schema_lib/
+total 12
+drwxr-xr-x 2 root root 4096 Apr  1 11:47 .
+drwxr-xr-x 1 root root 4096 Apr  1 21:06 ..
+-rw-r--r-- 1 root root  340 Apr  1 11:55 __init__.py
+root@36a7986e2147:/app#

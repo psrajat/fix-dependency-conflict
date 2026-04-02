@@ -1,0 +1,10 @@
+[build-system]
+requires = ["setuptools==75.8.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "reporting-sdk"
+version = "2.2.0"
+dependencies = [
+  "schema-lib @ file:///app/packages/schema_lib_v2",
+]

@@ -1,0 +1,9 @@
+New Terminal Output:
+
+root@4e34e58b8cb8:/app# pip uninstall telemetry-sdk -y
+Found existing installation: telemetry-sdk 1.4.0
+Uninstalling telemetry-sdk-1.4.0:
+  Successfully uninstalled telemetry-sdk-1.4.0
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a v
+irtual environment instead: https://pip.pypa.io/warnings/venv
+root@4e34e58b8cb8:/app#

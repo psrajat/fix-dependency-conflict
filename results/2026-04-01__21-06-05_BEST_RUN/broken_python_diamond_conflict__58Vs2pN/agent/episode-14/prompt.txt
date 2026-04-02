@@ -1,0 +1,5 @@
+New Terminal Output:
+
+root@87ed7ee2c35d:/app# python -c "import reporting_sdk; print('reporting_sdk imported successfully')"
+reporting_sdk imported successfully
+root@87ed7ee2c35d:/app#

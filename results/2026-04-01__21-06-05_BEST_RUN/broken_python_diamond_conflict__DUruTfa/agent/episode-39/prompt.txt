@@ -1,0 +1,5 @@
+New Terminal Output:
+
+root@93cc3dce2069:/app# cd packages/telemetry_sdk && python setup.py build
+python: can't open file '/app/packages/telemetry_sdk/setup.py': [Errno 2] No such file or directory
+root@93cc3dce2069:/app/packages/telemetry_sdk#

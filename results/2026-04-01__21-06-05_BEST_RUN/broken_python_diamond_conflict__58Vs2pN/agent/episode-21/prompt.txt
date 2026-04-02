@@ -1,0 +1,14 @@
+New Terminal Output:
+
+root@87ed7ee2c35d:/app# cat packages/telemetry_sdk/telemetry_sdk/encoder.py
+from schema_lib import normalize_event
+
+
+def encode_event(payload: dict) -> dict:
+    normalized = normalize_event(payload, drop_empty=True)
+    return {
+        "channel": normalized.get("source", "unknown"),
+        "event": normalized["event"],
+        "schema_version": normalized["schema_version"],
+    }
+root@87ed7ee2c35d:/app#

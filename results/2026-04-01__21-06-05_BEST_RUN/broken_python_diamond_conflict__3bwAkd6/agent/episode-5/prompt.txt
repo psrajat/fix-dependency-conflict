@@ -1,0 +1,6 @@
+New Terminal Output:
+
+root@4e34e58b8cb8:/app# ls -la packages/ | grep -E "(reporting_sdk|summary_sdk)"
+drwxr-xr-x 3 root root 4096 Apr  1 11:47 reporting_sdk_v1
+drwxr-xr-x 1 root root 4096 Apr  1 21:06 reporting_sdk_v2
+root@4e34e58b8cb8:/app#

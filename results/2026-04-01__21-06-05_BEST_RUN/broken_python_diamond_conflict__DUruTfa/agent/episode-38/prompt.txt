@@ -1,0 +1,5 @@
+New Terminal Output:
+
+root@93cc3dce2069:/app# python -c "from schema_lib import normalize_event; import inspect; print(inspect.signature(normalize_event))"
+(payload: dict, *, drop_empty: bool = False) -> dict
+root@93cc3dce2069:/app#

@@ -1,0 +1,14 @@
+New Terminal Output:
+
+root@371a193e1ac4:/app# cat /usr/local/lib/python3.12/site-packages/reporting_sdk/formatter.py
+from schema_lib import normalize_event
+
+
+def build_report_record(payload: dict) -> dict:
+    normalized = normalize_event(payload, required_fields=("source", "event"))
+    return {
+        "group": normalized["source"],
+        "user_id": normalized.get("user_id"),
+        "schema_version": normalized["schema_version"],
+    }
+root@371a193e1ac4:/app#

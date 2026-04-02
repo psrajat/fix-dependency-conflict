@@ -1,0 +1,5 @@
+New Terminal Output:
+
+root@36a7986e2147:/app# sed -i 's/^# schema-lib @ file:\/\/\/app\/packages\/schema_lib_v1$/schema-lib @ file:\/\/\/app\/packages\/schema_lib_v1/' requirements.t
+xt
+root@36a7986e2147:/app#

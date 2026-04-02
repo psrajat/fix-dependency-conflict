@@ -1,0 +1,6 @@
+New Terminal Output:
+
+root@be855c1f7611:/app# python app.py > app.log 2>&1 &
+[3] 738
+[2]   Terminated              python app.py > app.log 2>&1
+root@be855c1f7611:/app#

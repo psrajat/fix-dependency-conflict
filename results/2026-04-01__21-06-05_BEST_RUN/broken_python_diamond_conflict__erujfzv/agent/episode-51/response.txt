@@ -1,0 +1,10 @@
+{
+  "analysis": "I can see that the app.py has commented code that suggests it should use summary_sdk with a render_summary function. Let me check if there's a summary_sdk package available in the packages directory that should be enabled.",
+  "plan": "I'll check if there's a summary_sdk package in the packages directory, and if so, examine what it provides to determine if it should be enabled for the final implementation.",
+  "commands": [
+    {
+      "keystrokes": "ls -la packages/ | grep summary\n",
+      "duration": 0.1
+    }
+  ]
+}
