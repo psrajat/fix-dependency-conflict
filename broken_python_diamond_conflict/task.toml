@@ -3,11 +3,9 @@ schema_version = "1.1"
 [task]
 name = "psrajat/broken_python_diamond_conflict"
 version = "1.0.0"
-# description = "Fix a Python service whose summary endpoint is broken by a circular import inside a vendored SDK."
-description = "Fix a Python service broken by a resolver-selected transitive dependency conflict across two internal SDK branches."
+description = "Fix a Python service broken by a diamond dependency conflict"
 author = "psrajat"
 domain = "Backend SWE"
-# difficulty = "medium"
 difficulty = "hard"
 
 [metadata]
